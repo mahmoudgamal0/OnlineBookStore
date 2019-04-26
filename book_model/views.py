@@ -5,7 +5,7 @@ def home_get(request,*arg,**karg):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="MUH@mmed3592481",
+        passwd="",
         db="sys"
     )
 
