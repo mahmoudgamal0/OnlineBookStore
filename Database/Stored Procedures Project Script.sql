@@ -294,5 +294,52 @@ BEGIN
 END//
 
 
+# User functionalities procedures
+
+CREATE PROCEDURE `update_user_info` (
+	IN user_idiN INT,
+	IN usernameIn VARCHAR(45),
+    IN passwordIn CHAR(64),
+    IN last_nameIn VARCHAR(45),
+    IN first_nameIn VARCHAR(45),
+    IN emailIn VARCHAR(45),
+    IN phoneIn VARCHAR(13),
+    IN shipping_addressIn VARCHAR(50)
+)
+BEGIN
+	UPDATE Users
+    SET
+		username = usernameIn,
+        password = passwordIn,
+        last_name = last_nameIn,
+        first_name = first_nameIn,
+        email = emailIn, 
+        phone = phoneIn, 
+        shipping_address = shipping_addressIn
+	WHERE user_id = user_idIn;
+END//
+
+CREATE PROCEDURE `cart_include_book_quantity` (
+	IN cart_idIn INT,
+    IN ISBNIn INT,
+    IN quantityIn INT
+)
+BEGIN
+	IF (SELECT EXISTS(SELECT * FROM Cart_Items WHERE cart_id = cart_idIn AND ISBN = ISBNIn)) THEN
+		UPDATE Cart_Items
+        SET quantity = quantityIn
+        WHERE  cart_id = cart_idIn AND ISBN = ISBNIn;
+	ELSE
+		INSERT INTO Cart_Items (cart_id, ISBN, quantity, price)
+        VALUES (cart_idIn, ISBNIn, quantityIn, (SELECT price FROM Books WHERE ISBN = ISBNIn));
+    END IF;
+END//
+
+CREATE PROCEDURE `view_cart` (IN cart_idIn INT)
+BEGIN
+	SELECT * FROM Cart_items
+END
+
+
 
 DELIMITER ;
