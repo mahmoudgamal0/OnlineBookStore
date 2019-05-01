@@ -7,19 +7,19 @@ DELIMITER //
 CREATE PROCEDURE `is_manager` (IN id INT)
 BEGIN
 	IF (SELECT NOT EXISTS(SELECT * FROM Managers WHERE id = user_idOUT)) THEN
-			SET user_id = 0;			
+			SET id = 0;			
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'User is not a registered manager';
         END IF;
 END//
 
 CREATE PROCEDURE `init_cart` (
-	IN user_id INT,
-    OUT cart_id INT
+	IN user_idIn INT,
+    OUT cart_idOUT INT
 )
 BEGIN
 	INSERT INTO Carts (user_id)
-    VALUES (user_id);
+    VALUES (user_idIn);
     
     SET cart_idOUT = LAST_INSERT_ID();
 END//
@@ -89,7 +89,7 @@ BEGIN
 		FROM Users u
 		WHERE username = usernameIn;
         IF passwordIn <> realPassword THEN
-			SET user_id = 0;			
+			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Invalid username or password';
 		END IF;
@@ -119,7 +119,7 @@ BEGIN
 		FROM Users u
 		WHERE username = usernameIn;
         IF passwordIn <> realPassword THEN
-			SET user_id = 0;			
+			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Invalid username or password';
 		END IF;
@@ -149,7 +149,7 @@ BEGIN
 		FROM Users u
 		WHERE username = usernameIn;
         IF passwordIn <> realPassword THEN
-			SET user_id = 0;			
+			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Invalid username or password';
 		END IF;
@@ -177,7 +177,7 @@ BEGIN
 		FROM Users u
 		WHERE username = usernameIn;
         IF passwordIn <> realPassword THEN
-			SET user_id = 0;			
+			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'Invalid username or password';
 		END IF;
@@ -319,7 +319,9 @@ BEGIN
 	WHERE user_id = user_idIn;
 END//
 
-CREATE PROCEDURE `cart_include_book_quantity` (
+# Cart management
+
+CREATE PROCEDURE `cart_include_book` (
 	IN cart_idIn INT,
     IN ISBNIn INT,
     IN quantityIn INT
@@ -337,8 +339,44 @@ END//
 
 CREATE PROCEDURE `view_cart` (IN cart_idIn INT)
 BEGIN
-	SELECT * FROM Cart_items
-END
+	SELECT *
+    FROM Cart_Items
+    WHERE cart_id = cart_idIn;
+END//
+
+CREATE PROCEDURE `cart_exclude_book` (
+	IN cart_idIn INT,
+    IN ISBNIn INT
+)
+BEGIN
+	DELETE FROM Cart_Items
+    WHERE cart_id = cart_idIn AND ISBN = ISBNIn;
+END//
+
+CREATE PROCEDURE `cart_empty` (
+	IN cart_idIn INT
+)
+BEGIN
+    DELETE FROM Cart_Items
+    WHERE cart_id = cart_idIn;
+END//
+
+CREATE PROCEDURE `cart_remove` (
+	IN cart_idIn INT
+)
+BEGIN
+    DELETE FROM Carts
+    WHERE cart_id = cart_idIn;
+END//
+
+CREATE PROCEDURE `cart_checkout` (
+	IN cart_idIn INT
+)
+BEGIN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Not implemented yet';
+END//
+
 
 
 
