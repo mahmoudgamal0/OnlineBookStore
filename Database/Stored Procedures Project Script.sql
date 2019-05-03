@@ -268,17 +268,19 @@ BEGIN
 	END IF;
 END//
 
-CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
-BEGIN
-	IF (SELECT EXISTS(SELECT * FROM Mng_Order WHERE order_id = order_idIn)) THEN
-		UPDATE Mng_Order
-        SET confirmation = TRUE
-        WHERE order_id = order_idIn;
-	ELSE
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Order id not found in database';
-    END IF;
-END//
+# Deleted
+#
+# CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
+# BEGIN
+# 	IF (SELECT EXISTS(SELECT * FROM Mng_Order WHERE order_id = order_idIn)) THEN
+# 		UPDATE Mng_Order
+#         SET confirmation = TRUE
+#         WHERE order_id = order_idIn;
+# 	ELSE
+#     SIGNAL SQLSTATE '45000'
+#     SET MESSAGE_TEXT = 'Order id not found in database';
+#     END IF;
+# END//
 
 CREATE PROCEDURE `order_books_from_publisher` (
     IN quantityIn INT,
