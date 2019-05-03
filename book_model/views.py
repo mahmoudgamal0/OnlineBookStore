@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.db import connection
 import mysql.connector
 
 def connect():
@@ -16,9 +17,13 @@ def connect():
 # Create your views here.
 def home_get(request,msg_err = None):
     mydb, cur = connect()
+    cur = connection.cursor()
     cur.execute("SELECT * FROM Users")
     test_data = cur.fetchall()
-    session_id = request.session['user_id']
+    try:
+        session_id = request.session['user_id']
+    except Exception:
+        return render(request, 'home.html', {'data': test_data, 'error': msg_err})
     mydb.close()
     return render(request,'home.html', {'data': test_data,'session_id': session_id, 'error': msg_err})
 
