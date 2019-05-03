@@ -17,8 +17,20 @@ from django.contrib import admin
 from django.urls import path
 from book_model import views
 
+from manager import views as mview
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', views.home_get),
+
+    # Manager Operations
+    path('manager/insert', mview.insert_book),
+    path('manager/modify/<slug:ISBN>', mview.modify_book),
+    path('manager/search', mview.search_base),
+    path('manager/search/ISBN/<slug:ISBN>', mview.search_book_ISBN),
+    path('manager/search/title/<slug:title>', mview.search_book_title),
+    path('manager/search/author/<slug:author>', mview.search_book_author),
+    path('manager/search/publisher/<slug:publisher>', mview.search_book_publisher),
+    path('manager/search/category/<int:category>', mview.search_book_category),
+    path('manager/orders', mview.book_orders)
 ]
