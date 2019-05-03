@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if orders %}
+        <form method="POST"> {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Order id</th>
+                    <th>Quantity</th>
+                    <th>Publisher id</th>
+                    <th>ISBN</th>
+                    <th>Confirm</th>
+                </tr>
+                {% for order in orders %}
+                    <tr>
+                        <th>{{ order.0 }}</th>
+                        <th>{{ order.1 }}</th>
+                        <th>{{ order.2 }}</th>
+                        <th>{{ order.4 }}</th>
+                        <th><input type="checkbox" name={{ order.0 }}></th>
+                    </tr>
+                {% endfor %}
+            </table>
+        <input type="submit" name="confirm" value="Confirm Orders">
+        </form>
+    {% else %}
+        <p>No Orders</p>
+    {% endif %}
+{% endblock %}

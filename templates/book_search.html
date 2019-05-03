@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<body>
+    <form action="/manager/search" method="GET">
+        <input name="search_field" placeholder="Search for something..." type="text"/>
+        <input type="submit" value="Search" name="search"/>
+
+        <label for="ISBN"> ISBN </label>
+        <input type="radio" name="group" value="ISBN" id="ISBN" checked/>
+
+        <label for="title"> Title </label>
+        <input type="radio" name="group" value="title" id="title">
+
+        <label for="author"> Author </label>
+        <input type="radio" name="group" value="author" id="author">
+
+        <label for="publisher"> Publisher </label>
+        <input type="radio" name="group" value="publisher" id="publisher">
+
+        {% include 'category.html' %}
+    </form>
+
+    {% if books %}
+        <ul>
+            {% for book in books %}
+                <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Cannot find results</p>
+    {% endif %}
+{% endblock %}

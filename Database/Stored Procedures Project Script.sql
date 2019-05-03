@@ -268,17 +268,19 @@ BEGIN
 	END IF;
 END//
 
-CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
-BEGIN
-	IF (SELECT EXISTS(SELECT * FROM Mng_Order WHERE order_id = order_idIn)) THEN
-		UPDATE Mng_Order
-        SET confirmation = TRUE
-        WHERE order_id = order_idIn;
-	ELSE
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Order id not found in database';
-    END IF;
-END//
+# Deleted
+#
+# CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
+# BEGIN
+# 	IF (SELECT EXISTS(SELECT * FROM Mng_Order WHERE order_id = order_idIn)) THEN
+# 		UPDATE Mng_Order
+#         SET confirmation = TRUE
+#         WHERE order_id = order_idIn;
+# 	ELSE
+#     SIGNAL SQLSTATE '45000'
+#     SET MESSAGE_TEXT = 'Order id not found in database';
+#     END IF;
+# END//
 
 CREATE PROCEDURE `order_books_from_publisher` (
     IN quantityIn INT,
@@ -378,6 +380,69 @@ BEGIN
 END//
 
 
+# Choices Management
+CREATE PROCEDURE `get_publishers` ()
+BEGIN
+    SELECT publisher_id, name
+    FROM Publisher;
+END //
 
+CREATE PROCEDURE `get_categories` ()
+BEGIN
+    SELECT category_id, category_name
+    FROM Category;
+END //
+
+# Search Utilities
+CREATE PROCEDURE `get_book`(
+    IN ISBNIn VARCHAR(25)
+)
+BEGIN
+    SELECT *
+    FROM Books
+    WHERE ISBN = ISBNIn;
+END //
+
+CREATE PROCEDURE `get_books_by_title`(
+    IN titleIn VARCHAR(60)
+)
+BEGIN
+    SELECT *
+    FROM Books
+    WHERE title like titleIn;
+END //
+
+CREATE PROCEDURE `get_books_by_author`(
+    IN nameIn VARCHAR(50)
+)
+BEGIN
+    SELECT Books.*
+    FROM Books JOIN Book_Authors BA on Books.ISBN = BA.ISBN
+    WHERE author_name like nameIn;
+END //
+
+CREATE PROCEDURE `get_books_by_publisher`(
+    IN nameIn VARCHAR(50)
+)
+BEGIN
+    SELECT Books.*
+    FROM Books JOIN Publisher P on Books.publisher_id = P.publisher_id
+    WHERE name like nameIn;
+END //
+
+CREATE PROCEDURE `get_books_by_category`(
+    IN categoryIN INT
+)
+BEGIN
+    SELECT *
+    FROM Books
+    WHERE category_id = categoryIN;
+END //
+
+CREATE PROCEDURE `get_manager_orders`()
+BEGIN
+    SELECT *
+    FROM Mng_Order;
+END //
 
 DELIMITER ;
