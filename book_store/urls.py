@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,re_path
-from book_model import views
+from book_model import views as uview
 
 from manager import views as mview
 
@@ -23,12 +23,12 @@ from manager import views as mview
 urlpatterns = [
     path('admin/', admin.site.urls),
     # User operations
-    re_path(r'home/(?P<msg_err>[A-Za-z\s]+)?', views.home_get),
-    path('next/', views.next),
-    path('signup/', views.signup),
-    re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', views.login),
-    path('logout/', views.logout),
-    path('update_user/', views.update_user),
+    re_path(r'home/(?P<msg_err>[A-Za-z\s]+)?', uview.home_get),
+    path('next/', uview.next),
+    path('signup/', uview.signup),
+    re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', uview.login),
+    path('logout/', uview.logout),
+    path('update_user/', uview.update_user),
 
 
 
