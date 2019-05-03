@@ -42,5 +42,5 @@ urlpatterns = [
     path('manager/search/publisher/<slug:publisher>', mview.search_book_publisher),
     path('manager/search/category/<int:category>', mview.search_book_category),
     path('manager/orders', mview.book_orders)
->>>>>>> manager_ops
+
 ]
