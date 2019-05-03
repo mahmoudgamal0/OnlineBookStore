@@ -5,7 +5,11 @@
     <title>Book_store</title>
 </head>
 <body>
+{% if error %}
+    {{ error }}
+{% endif %}
 <h1>Landing page</h1>
 <p>{{ data }}</p>
+<p>{{ session_id }}</p>
 </body>
 </html>

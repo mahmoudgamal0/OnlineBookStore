@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>update</title>
+</head>
+<body>
+    <form method="POST" action=".">
+        {% csrf_token %}
+        User name:<br>
+        <input type="text" name="user_name" value="{{ user_name }}"><br>
+        First name:<br>
+        <input type="text" name="first_name" value="{{ fname }}"><br>
+        Last name:<br>
+        <input type="text" name="last_name" value="{{ lname }}"><br>
+        Email:<br>
+        <input type="text" name="email" value="{{ email }}"><br>
+        password:<br>
+        <input type="password" name="password" value="{{ password }}"><br>
+        Phone:<br>
+        <input type="text" name="phone" value="{{ phone }}"><br>
+        Shipping address:<br>
+        <input type="text" name="shipping_address" value="{{ shipping_address }}"><br>
+        <input type="submit" value="update">
+    </form>
+</body>
+</html>
