@@ -36,8 +36,11 @@ def next(request):
 
 
 def signup(request):
-    if(request.session['user_id'] != None):
-        return redirect('/home/you logged in')
+    try:
+        if(request.session['user_id'] != None):
+            return redirect('/home/you logged in')
+    except Exception as e:
+        print(e)
     if(request.method == 'GET'):
         return render(request,'signup.html',{})
     elif(request.method == 'POST'):

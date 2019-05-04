@@ -19,6 +19,7 @@ from book_model import views as uview
 
 from manager import views as mview
 from search import views as sview
+from carts import views as cview
 
 
 urlpatterns = [
@@ -47,4 +48,6 @@ urlpatterns = [
     path('search/<slug:auth>/publisher/<slug:publisher>', sview.search_book_publisher),
     path('search/<slug:auth>/category/<int:category>', sview.search_book_category),
 
+    # cart operation
+    path('cart/add_book', cview.add_book),
 ]
