@@ -353,31 +353,50 @@ BEGIN
     WHERE cart_id = cart_idIn AND ISBN = ISBNIn;
 END//
 
-CREATE PROCEDURE `cart_empty` (
-	IN cart_idIn INT
-)
+CREATE PROCEDURE `cart_empty` (IN cart_idIn INT)
 BEGIN
     DELETE FROM Cart_Items
     WHERE cart_id = cart_idIn;
 END//
 
-CREATE PROCEDURE `cart_remove` (
-	IN cart_idIn INT
-)
+CREATE PROCEDURE `cart_remove` (IN cart_idIn INT)
 BEGIN
     DELETE FROM Carts
     WHERE cart_id = cart_idIn;
 END//
 
-CREATE PROCEDURE `cart_checkout` (
-	IN cart_idIn INT
-)
+CREATE PROCEDURE `cart_checkout` (IN cart_idIn INT)
 BEGIN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Not implemented yet';
+    DECLARE finished INT DEFAULT 0;
+    DECLARE ISBNIt VARCHAR(25);
+    DECLARE quantityIt INT UNSIGNED;
+    
+    DECLARE cart_cursor CURSOR
+    FOR	SELECT ISBN, quantity
+		FROM Cart_Items
+        WHERE cart_id = cart_idIn;
+	
+    DECLARE CONTINUE HANDLER 
+	FOR NOT FOUND SET finished = 1;
+    
+    OPEN cart_cursor;
+    
+    get_item : LOOP
+		FETCH cart_cursor INTO ISBNIT, quantityIt;
+        IF finished = 1 THEN
+			LEAVE get_item;
+		END IF;
+        
+        UPDATE Books
+        SET quantity = quantity - quantityIt
+        WHERE ISBN = ISBNIt;
+        
+	END LOOP get_item;
+    
+    CLOSE cart_cursor;
+    
+    CALL cart_empty(cart_idIn);
 END//
-
-
 
 
 DELIMITER ;
