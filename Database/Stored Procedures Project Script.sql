@@ -268,18 +268,6 @@ BEGIN
 	END IF;
 END//
 
-<<<<<<< HEAD
-CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
-BEGIN
-	IF (SELECT EXISTS(SELECT * FROM Mng_Order WHERE order_id = order_idIn)) THEN
-		DELETE FROM Mng_Order
-        WHERE order_id = order_idIn;
-	ELSE
-		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Order id not found in database';
-    END IF;
-END//
-=======
 # Deleted
 #
 # CREATE PROCEDURE `confirm_order` (IN order_idIn INT)
@@ -293,7 +281,6 @@ END//
 #     SET MESSAGE_TEXT = 'Order id not found in database';
 #     END IF;
 # END//
->>>>>>> 3e79753e9171ca16dd80a233a2ab348181779d6b
 
 CREATE PROCEDURE `order_books_from_publisher` (
     IN quantityIn INT,
@@ -414,8 +401,6 @@ BEGIN
 END//
 
 
-<<<<<<< HEAD
-=======
 # Choices Management
 CREATE PROCEDURE `get_publishers` ()
 BEGIN
@@ -429,7 +414,7 @@ BEGIN
     FROM Category;
 END //
 
-# Search Utilities
+# search Utilities
 CREATE PROCEDURE `get_book`(
     IN ISBNIn VARCHAR(25)
 )
@@ -481,5 +466,13 @@ BEGIN
     FROM Mng_Order;
 END //
 
->>>>>>> 3e79753e9171ca16dd80a233a2ab348181779d6b
+CREATE PROCEDURE `get_users_by_username`(
+    IN usernameIn VARCHAR(45)
+)
+BEGIN
+    SELECT user_id, username, first_name, last_name
+    FROM Users
+    WHERE username LIKE usernameIn AND user_id NOT IN (SELECT id FROM Managers);
+END //
+
 DELIMITER ;
