@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<body>
+     <form action="/manager/users" method="GET">
+            <input name="search_field" placeholder="Enter username..." type="text"/>
+            <input type="submit" value="Search" name="search"/>
+     </form>
+
+    {% if users %}
+        <form method="POST"> {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Promote</th>
+                </tr>
+                {% for user in users %}
+                    <tr>
+                        <th>{{ user.1 }}</th>
+                        <th>{{ user.2 }}</th>
+                        <th>{{ user.3 }}</th>
+                        <th><input type="checkbox" name={{ user.0 }}></th>
+                    </tr>
+                {% endfor %}
+            </table>
+        <input type="submit" name="promote" value="Promote">
+        </form>
+    {% endif %}
+</body>
+
+{% endblock %}

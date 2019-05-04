@@ -1,0 +1,28 @@
+<form method="GET">
+    <input name="search_field" placeholder="Search for something..." type="text"/>
+    <input type="submit" value="Search" name="search"/>
+
+    <label for="ISBN"> ISBN </label>
+    <input type="radio" name="group" value="ISBN" id="ISBN" checked/>
+
+    <label for="title"> Title </label>
+    <input type="radio" name="group" value="title" id="title">
+
+    <label for="author"> Author </label>
+    <input type="radio" name="group" value="author" id="author">
+
+    <label for="publisher"> Publisher </label>
+    <input type="radio" name="group" value="publisher" id="publisher">
+    <select id="category" onchange="this.form.submit()" name="selector">
+        <option value="0" disabled selected>Select a Category</option>
+        <option value="1">Science</option>
+        <option value="2">Art</option>
+        <option value="3">Religion</option>
+        <option value="4">History</option>
+        <option value="5">Geography</option>
+    </select>
+</form>
+
+<script>
+    document.getElementById("category").value = {{ selected_index }};
+</script>

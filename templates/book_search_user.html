@@ -3,14 +3,16 @@
 {% block content %}
 
 <body>
-    <form action="/search/m" method="GET">
+    <form action="/search/u" method="GET">
         {% include 'search_setup.html' %}
     </form>
 
     {% if books %}
         <ul>
             {% for book in books %}
-                <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
+                <li>
+                    <p>Title: {{ book.1 }}, Price:{{ book.4}}  <button type="button">Add to Cart!</button></p>
+                </li>
             {% endfor %}
         </ul>
     {% else %}

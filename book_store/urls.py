@@ -18,6 +18,7 @@ from django.urls import path,re_path
 from book_model import views as uview
 
 from manager import views as mview
+from search import views as sview
 
 
 urlpatterns = [
@@ -35,12 +36,15 @@ urlpatterns = [
     # Manager Operations
     path('manager/insert', mview.insert_book),
     path('manager/modify/<slug:ISBN>', mview.modify_book),
-    path('manager/search', mview.search_base),
-    path('manager/search/ISBN/<slug:ISBN>', mview.search_book_ISBN),
-    path('manager/search/title/<slug:title>', mview.search_book_title),
-    path('manager/search/author/<slug:author>', mview.search_book_author),
-    path('manager/search/publisher/<slug:publisher>', mview.search_book_publisher),
-    path('manager/search/category/<int:category>', mview.search_book_category),
-    path('manager/orders', mview.book_orders)
+    path('manager/orders', mview.book_orders),
+    path('manager/users', mview.promote_user),
+
+    # Search Operations
+    path('search/<slug:auth>', sview.search_base),
+    path('search/<slug:auth>/ISBN/<slug:ISBN>', sview.search_book_ISBN),
+    path('search/<slug:auth>/title/<slug:title>', sview.search_book_title),
+    path('search/<slug:auth>/author/<slug:author>', sview.search_book_author),
+    path('search/<slug:auth>/publisher/<slug:publisher>', sview.search_book_publisher),
+    path('search/<slug:auth>/category/<int:category>', sview.search_book_category),
 
 ]
