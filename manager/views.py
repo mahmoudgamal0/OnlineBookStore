@@ -41,7 +41,7 @@ def modify_book(request, ISBN, *args, **kwargs):
 
     if request.method == 'POST':
         if 'cancel' in request.POST:
-            return redirect('../search/'+ISBN)
+            return redirect('../../search/m/ISBN/'+ISBN)
 
         form = RawInsertModifyBookForm(request.POST)
         form.set_choices(publishers, categories)
@@ -53,7 +53,7 @@ def modify_book(request, ISBN, *args, **kwargs):
                 modified_attr.insert(0, ISBN)
                 cursor.callproc('modify_book', modified_attr)
             new_ISBN = modified_attr[1]
-            return redirect('../search/ISBN/'+new_ISBN)
+            return redirect('../../search/m/ISBN/'+new_ISBN)
     else:
         with connection.cursor() as cursor:
             cursor.callproc('get_book', [ISBN])
@@ -71,66 +71,16 @@ def modify_book(request, ISBN, *args, **kwargs):
         return render(request, 'book_modify.html', context)
 
 
-def search_base(request, *args, **kwargs):
-    context = {
-        'title': 'Search for Books',
-        'books': []
-    }
-
-    if 'search' or 'selector' in request.GET:
-        if 'selector' in request.GET:
-            return redirect("search/category/{0}".format(int(request.GET.get('selector'))))
-        return redirect("search/{0}/{1}".format(request.GET['group'], request.GET.get('search_field')))
-
-    return render(request, 'book_search.html', context)
-
-
-def search_book_ISBN(request, ISBN, *args, **kwargs):
-    return search_book(request, 'get_book', [ISBN])
-
-
-def search_book_title(request, title, *args, **kwargs):
-    return search_book(request, 'get_books_by_title', ['%'+title+'%'])
-
-
-def search_book_author(request, author, *args, **kwargs):
-    return search_book(request, 'get_books_by_author', ['%'+author+'%'])
-
-
-def search_book_publisher(request, publisher, *args, **kwargs):
-    return search_book(request, 'get_books_by_publisher', ['%'+publisher+'%'])
-
-
-def search_book_category(request, category, *args, **kwargs):
-    return search_book(request, 'get_books_by_category', [category])
-
-
-def search_book(request, procedure, args):
-    with connection.cursor() as cursor:
-        cursor.callproc(procedure, args)
-        books = cursor.fetchall()
-
-    selected_index = 0
-    if type(args[0]) == int:
-        selected_index = args[0]
-
-    print(selected_index)
-    context = {
-        'title': 'Search for Books',
-        'books': books,
-        'selected_index': selected_index
-    }
-    return render(request, 'book_search.html', context)
-
-
 def book_orders(request, *args, **kwargs):
 
     if request.method == 'POST':
         confirmed_orders = list(filter(lambda x: request.POST[x] == 'on', request.POST.keys()))
         confirmed_orders = tuple(map(lambda x: int(x), confirmed_orders))
         with connection.cursor() as cursor:
-            cursor.execute("UPDATE BOOKSTORE.Mng_Order SET confirmation = 1 WHERE order_id IN {0}"
-                           .format(confirmed_orders))
+            if len(confirmed_orders) == 1:
+                cursor.execute("DELETE FROM BOOKSTORE.Mng_Order WHERE order_id = {0}".format(confirmed_orders[0]))
+            else:
+                cursor.execute("DELETE FROM BOOKSTORE.Mng_Order WHERE order_id IN {0}".format(confirmed_orders))
 
     with connection.cursor() as cursor:
         cursor.callproc('get_manager_orders')
@@ -142,3 +92,25 @@ def book_orders(request, *args, **kwargs):
     }
 
     return render(request, 'book_orders.html', context)
+
+
+def promote_user(request, *args, **kwargs):
+
+    context = {
+        'title': 'Site Users',
+        'users': []
+    }
+
+    if request.method == 'POST':
+        users_to_promote = list(filter(lambda x: request.POST[x] == 'on', request.POST.keys()))
+        users_to_promote = tuple(map(lambda x: int(x), users_to_promote))
+        with connection.cursor() as cursor:
+            for user in users_to_promote:
+                cursor.callproc('promote_user_by_id', [user])
+
+    if 'search' in request.GET:
+        with connection.cursor() as cursor:
+            cursor.callproc('get_users_by_username', ['%'+request.GET.get('search_field')+'%'])
+            context['users'] = cursor.fetchall()
+
+    return render(request, 'user_promote.html', context)
