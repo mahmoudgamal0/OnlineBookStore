@@ -1,0 +1,14 @@
+<form method="GET">
+<select id="category" onchange="this.form.submit()" name="selector">
+    <option value="0" disabled selected>Select a Category</option>
+    <option value="1">Science</option>
+    <option value="2">Art</option>
+    <option value="3">Religion</option>
+    <option value="4">History</option>
+    <option value="5">Geography</option>
+</select>
+</form>
+
+<script>
+    document.getElementById("category").value = {{ selected_index }};
+</script>

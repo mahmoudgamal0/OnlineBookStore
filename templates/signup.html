@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>signup page</title>
+</head>
+<body>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action=".">
+        {% csrf_token %}
+        User name:<br>
+        <input type="text" name="user_name"><br>
+        First name:<br>
+        <input type="text" name="first_name"><br>
+        Last name:<br>
+        <input type="text" name="last_name"><br>
+        Email:<br>
+        <input type="text" name="email"><br>
+        password:<br>
+        <input type="password" name="password"><br>
+        Phone:<br>
+        <input type="text" name="phone"><br>
+        Shipping address:<br>
+        <input type="text" name="shipping_address"><br>
+        <input type="submit" value="register">
+    </form>
+
+</body>
+</html>
