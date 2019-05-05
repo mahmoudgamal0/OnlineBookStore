@@ -11,9 +11,31 @@
         <ul>
             {% for book in books %}
                 <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
+                <form method="post" id="add_to_cart">
+                    {% csrf_token %}
+                    <input type="submit" value="To Cart">
+                </form>
             {% endfor %}
         </ul>
     {% else %}
         <p>Cannot find results</p>
     {% endif %}
+
+    <script>
+        $(document).on('submit','add_to_cart',function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/cart/add_book',
+                data:{
+                    //book_ispn: ISBN
+                },
+                success:function () {
+                    
+                }
+            });
+        });
+    </script>
+
+
 {% endblock %}
