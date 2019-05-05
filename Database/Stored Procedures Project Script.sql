@@ -4,10 +4,10 @@ DELIMITER //
 
 # Helper private procedures
 
-CREATE PROCEDURE `is_manager` (IN id INT)
+CREATE PROCEDURE `is_manager` (IN idIn INT)
 BEGIN
-	IF (SELECT NOT EXISTS(SELECT * FROM Managers WHERE id = user_idOUT)) THEN
-			SET id = 0;			
+	IF (SELECT NOT EXISTS(SELECT * FROM Managers WHERE id = idIn)) THEN
+			SET idIn = 0;
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'User is not a registered manager';
         END IF;
@@ -285,7 +285,7 @@ END//
 CREATE PROCEDURE `order_books_from_publisher` (
     IN quantityIn INT,
     IN publisher_idIn INT,
-    IN ISBN VARCHAR(25),
+    IN ISBNIn VARCHAR(25),
     OUT order_id INT
 )
 BEGIN
@@ -473,6 +473,33 @@ BEGIN
     SELECT user_id, username, first_name, last_name
     FROM Users
     WHERE username LIKE usernameIn AND user_id NOT IN (SELECT id FROM Managers);
+END //
+
+# Sales
+CREATE PROCEDURE `get_top_ten_books`()
+BEGIN
+    SELECT Sales.ISBN, B.title, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Books B on Sales.ISBN = B.ISBN
+	WHERE Sales.Timestamp >= LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 3 MONTH
+    AND Sales.Timestamp < LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 1 MONTH
+    GROUP BY Sales.ISBN ORDER BY Total DESC LIMIT 10;
+END //
+
+CREATE PROCEDURE `get_top_five_users`()
+BEGIN
+    SELECT username, first_name, last_name, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Users U on Sales.user_id = U.user_id
+    WHERE Sales.Timestamp >= LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 3 MONTH
+    AND Sales.Timestamp < LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 1 MONTH
+    GROUP BY Sales.user_id ORDER BY Total DESC LIMIT 5;
+END //
+
+CREATE PROCEDURE `get_sales_month`()
+BEGIN
+    SELECT Sales.ISBN, B.title, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Books B on Sales.ISBN = B.ISBN
+    WHERE MONTH(Sales.Timestamp) = MONTH(DATE_SUB(CURRENT_DATE ,INTERVAL 1 MONTH))
+    GROUP BY Sales.ISBN ORDER BY Total DESC;
 END //
 
 DELIMITER ;
