@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body>
+        <div>
+            <h1>Top 10 selling books</h1>
+            <ul>
+                {% for book in books %}
+                    <li>{{ book.0 }} {{ book.1 }} {{ book.2 }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h1>Top 5 users</h1>
+            <ul>
+                {% for user in users %}
+                    <li>{{ user.0 }} {{ user.1 }} {{ user.2 }} {{ user.3 }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h1>Last months sales</h1>
+            <ul>
+                {% for sale in sales %}
+                    <li>{{ sale.0 }} {{ sale.1 }} {{ sale.2 }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </body>
+{% endblock %}
