@@ -91,6 +91,11 @@ def login(request,msg_err = None):
         r = request.session['user_id']
         cur.execute("select @a")
         request.session['card_id'] = cur.fetchall()[0][0]
+        try:
+            cur.execute('call is_manager('+str(request.session['user_id'])+')')
+            request.session['is_manager'] = True
+        except mysql.connector.Error as err:
+            request.session['is_manager'] = False
         mydb.commit()
         mydb.close()
         return HttpResponse(str(r)+" hi")
