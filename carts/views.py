@@ -20,3 +20,19 @@ def add_book(request):
         db.commit()
         db.close()
         return HttpResponse("success")
+
+def remove_book(request):
+    if (request.method == 'POST'):
+        data = []
+        try:
+            cart_id = request.session['card_id']
+        except Exception as e:
+            return HttpResponse("user not logged in")
+        data.append(str(cart_id))
+        data.append(request.POST.get('ISBN'))
+        sql = call_procedure('cart_exclude_book', data)
+        db, cur = connect()
+        cur.execute(sql)
+        db.commit()
+        db.close()
+        return HttpResponse("success")

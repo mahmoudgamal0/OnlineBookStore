@@ -13,6 +13,7 @@
                 <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
                 <form id="{{ book.0 }}">{% csrf_token %}
                     <li><input type="submit" onclick="send_request({{ book.0 }})" value="add book"></li>
+                    <li><input type="submit" onclick="remove_request({{ book.0 }})" value="remove book"></li>
                 </form>
             {% endfor %}
         </ul>
@@ -33,11 +34,29 @@
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
                     success:function (result) {
+                        console.log(result);
                         alert('ok');
                     }
                 });
             });
+        }
 
+        function remove_request(isbn) {
+            $(document).on('submit','#'+isbn,function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/remove_book',
+                    data:{
+                        ISBN: isbn,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success:function (result) {
+                        console.log(result);
+                        alert('ok');
+                    }
+                });
+            });
         }
     </script>
 

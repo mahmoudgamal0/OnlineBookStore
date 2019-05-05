@@ -50,4 +50,5 @@ urlpatterns = [
 
     # cart operation
     path('cart/add_book', cview.add_book),
+    path('cart/remove_book', cview.remove_book),
 ]
