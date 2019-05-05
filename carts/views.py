@@ -11,9 +11,9 @@ def add_book(request):
             cart_id = request.session['card_id']
         except Exception as e:
             return HttpResponse("user not logged in")
-        data.append(cart_id)
-        data.append(request.POST.get['ISBN'])
-        data.append(1)
+        data.append(str(cart_id))
+        data.append(request.POST.get('ISBN'))
+        data.append(str(1))
         sql = call_procedure('cart_include_book', data)
         db, cur = connect()
         cur.execute(sql)
