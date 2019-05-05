@@ -16,21 +16,29 @@ def get_publishers_categories():
 def insert_book(request, *args, **kwargs):
 
     [publishers, categories] = get_publishers_categories()
-
+    errors = []
     if request.method == 'POST':
         form = RawInsertModifyBookForm(request.POST)
         form.set_choices(publishers, categories)
         if form.is_valid():
             data = form.cleaned_data
             with connection.cursor() as cursor:
-                cursor.callproc('add_book', data.values())
+                try:
+                    cursor.callproc('add_book', data.values())
+                except Exception as e:
+                    errors = e
 
-    form = RawInsertModifyBookForm()
-    form.set_choices(publishers, categories)
+    if errors:
+        pass
+    else:
+        form = RawInsertModifyBookForm()
+        form.set_choices(publishers, categories)
 
     context = {
         'title': 'Insert a new Book',
-        'form': form
+        'form': form,
+        'auth': request.session['is_manager'],
+        'errors': errors
     }
 
     return render(request, 'book_insert.html', context)
@@ -65,7 +73,8 @@ def modify_book(request, ISBN, *args, **kwargs):
 
         context = {
             'title': 'Insert a new Book',
-            'form': form
+            'form': form,
+            'auth': request.session['is_manager']
         }
 
         return render(request, 'book_modify.html', context)
@@ -88,7 +97,8 @@ def book_orders(request, *args, **kwargs):
 
     context = {
         'title': 'Book Orders',
-        'orders': orders
+        'orders': orders,
+        'auth': request.session['is_manager']
     }
 
     return render(request, 'book_orders.html', context)
@@ -98,7 +108,8 @@ def promote_user(request, *args, **kwargs):
 
     context = {
         'title': 'Site Users',
-        'users': []
+        'users': [],
+        'auth': request.session['is_manager']
     }
 
     if request.method == 'POST':
