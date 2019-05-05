@@ -125,3 +125,27 @@ def promote_user(request, *args, **kwargs):
             context['users'] = cursor.fetchall()
 
     return render(request, 'user_promote.html', context)
+
+
+def sales(request, *args, **kwargs):
+
+    with connection.cursor() as cursor:
+        cursor.callproc('get_top_ten_books')
+        books = cursor.fetchall()
+    with connection.cursor() as cursor:
+        cursor.callproc('get_top_five_users')
+        users = cursor.fetchall()
+    with connection.cursor() as cursor:
+        cursor.callproc('get_sales_month')
+        book_sales = cursor.fetchall()
+
+    context = {
+        'title': 'Sales Report',
+        'books': books,
+        'users': users,
+        'sales': book_sales,
+        'auth': request.session['is_manager'],
+        'errors': []
+    }
+
+    return render(request, 'manager_sales.html', context)

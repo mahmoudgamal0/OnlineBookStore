@@ -39,6 +39,7 @@ urlpatterns = [
     path('manager/modify/<slug:ISBN>', mview.modify_book),
     path('manager/orders', mview.book_orders),
     path('manager/users', mview.promote_user),
+    path('manager/sales', mview.sales),
 
     # Search Operations
     path('search', sview.search_base),
