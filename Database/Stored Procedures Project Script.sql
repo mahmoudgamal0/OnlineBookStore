@@ -117,7 +117,7 @@ BEGIN
 		SELECT user_id, password
         INTO user_idOUT, realPassword
 		FROM Users u
-		WHERE username = usernameIn;
+		WHERE email = emailIn;
         IF passwordIn <> realPassword THEN
 			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
@@ -147,7 +147,7 @@ BEGIN
 		SELECT user_id, password
         INTO user_idOUT, realPassword
 		FROM Users u
-		WHERE username = usernameIn;
+		WHERE email = emailIn;
         IF passwordIn <> realPassword THEN
 			SET user_idOUT = 0;			
 			SIGNAL SQLSTATE '45000'
