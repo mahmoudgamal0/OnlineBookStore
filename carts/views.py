@@ -36,3 +36,11 @@ def remove_book(request):
         db.commit()
         db.close()
         return HttpResponse("success")
+
+def get_cart(request):
+    try:
+        cart_id = request.session['card_id']
+    except Exception as e:
+        return HttpResponse("user not logged in")
+    carts = []
+    return render(request, 'cart.html', {'carts': carts})
