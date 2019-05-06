@@ -11,11 +11,33 @@
         <ul>
             {% for book in books %}
                 <li>
-                    <p>Title: {{ book.1 }}, Price:{{ book.4}}  <button type="button">Add to Cart!</button></p>
+                    <div>Title: {{ book.1 }}, Price:{{ book.4}}
+                        <form method="post" id="add_to_cart">
+                            {% csrf_token %}
+                            <input type="submit" value="To Cart"/>
+                        </form>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
         <p>Cannot find results</p>
     {% endif %}
+
+    <script>
+        $(document).on('submit','add_to_cart',function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/cart/add_book',
+                data:{
+                    //book_ispn: ISBN
+                },
+                success:function () {
+
+                }
+            });
+        });
+    </script>
+
 {% endblock %}
