@@ -367,14 +367,18 @@ BEGIN
     WHERE cart_id = cart_idIn;
 END//
 
-CREATE PROCEDURE `cart_checkout` (IN cart_idIn INT)
+CREATE PROCEDURE `cart_checkout` (
+	IN cart_idIn INT
+	IN user_idIn INT
+)
 BEGIN
     DECLARE finished INT DEFAULT 0;
     DECLARE ISBNIt VARCHAR(25);
     DECLARE quantityIt INT UNSIGNED;
+    DECLARE priceIt DECIMAL UNSIGNED;
     
     DECLARE cart_cursor CURSOR
-    FOR	SELECT ISBN, quantity
+    FOR	SELECT ISBN, quantity, price
 		FROM Cart_Items
         WHERE cart_id = cart_idIn;
 	
@@ -384,15 +388,20 @@ BEGIN
     OPEN cart_cursor;
     
     get_item : LOOP
-		FETCH cart_cursor INTO ISBNIT, quantityIt;
+		FETCH cart_cursor INTO ISBNIT, quantityIt, priceIt;
         IF finished = 1 THEN
 			LEAVE get_item;
 		END IF;
         
+	-- update quantity of books
         UPDATE Books
         SET quantity = quantity - quantityIt
         WHERE ISBN = ISBNIt;
         
+	-- update sales
+	INSERT INTO Sales (user_id, ISBN, Timestamp, quantity, price)
+	VALUES (user_idIn, ISBNIt, NOW(), quantityIt, priceIt);
+
 	END LOOP get_item;
     
     CLOSE cart_cursor;
