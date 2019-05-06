@@ -502,4 +502,32 @@ BEGIN
     GROUP BY Sales.ISBN ORDER BY Total DESC;
 END //
 
+# Visa Utilities
+CREATE PROCEDURE `check_user_credit`(
+    IN user_idIn INT
+)
+BEGIN
+    SELECT *
+    FROM Visa
+    WHERE user_id = user_idIn;
+END //
+
+CREATE PROCEDURE `add_user_credit`(
+    IN user_idIn INT,
+    IN credit_numberIn VARCHAR(19),
+    IN expiryIn DATE
+)
+BEGIN
+    INSERT INTO Visa VALUES (user_idIn, credit_numberIn, expiryIn);
+END //
+
+CREATE PROCEDURE `update_user_credit`(
+    IN user_idIn INT,
+    IN credit_numberIn VARCHAR(19),
+    IN expiryIn DATE
+)
+BEGIN
+    UPDATE Visa SET credit_number = credit_numberIn, expiry = expiryIn WHERE user_id = user_idIn;
+END //
+
 DELIMITER ;
