@@ -4,10 +4,10 @@ DELIMITER //
 
 # Helper private procedures
 
-CREATE PROCEDURE `is_manager` (IN id INT)
+CREATE PROCEDURE `is_manager` (IN idIn INT)
 BEGIN
-	IF (SELECT NOT EXISTS(SELECT * FROM Managers WHERE id = user_idOUT)) THEN
-			SET id = 0;			
+	IF (SELECT NOT EXISTS(SELECT * FROM Managers WHERE id = idIn)) THEN
+			SET idIn = 0;
 			SIGNAL SQLSTATE '45000'
 			SET MESSAGE_TEXT = 'User is not a registered manager';
         END IF;
@@ -285,7 +285,7 @@ END//
 CREATE PROCEDURE `order_books_from_publisher` (
     IN quantityIn INT,
     IN publisher_idIn INT,
-    IN ISBN VARCHAR(25),
+    IN ISBNIn VARCHAR(25),
     OUT order_id INT
 )
 BEGIN
@@ -367,14 +367,18 @@ BEGIN
     WHERE cart_id = cart_idIn;
 END//
 
-CREATE PROCEDURE `cart_checkout` (IN cart_idIn INT)
+CREATE PROCEDURE `cart_checkout` (
+	IN cart_idIn INT,
+	IN user_idIn INT
+)
 BEGIN
     DECLARE finished INT DEFAULT 0;
     DECLARE ISBNIt VARCHAR(25);
     DECLARE quantityIt INT UNSIGNED;
+    DECLARE priceIt DECIMAL UNSIGNED;
     
     DECLARE cart_cursor CURSOR
-    FOR	SELECT ISBN, quantity
+    FOR	SELECT ISBN, quantity, price
 		FROM Cart_Items
         WHERE cart_id = cart_idIn;
 	
@@ -384,15 +388,20 @@ BEGIN
     OPEN cart_cursor;
     
     get_item : LOOP
-		FETCH cart_cursor INTO ISBNIT, quantityIt;
+		FETCH cart_cursor INTO ISBNIT, quantityIt, priceIt;
         IF finished = 1 THEN
 			LEAVE get_item;
 		END IF;
         
+	-- update quantity of books
         UPDATE Books
         SET quantity = quantity - quantityIt
         WHERE ISBN = ISBNIt;
         
+	-- update sales
+        INSERT INTO Sales (user_id, ISBN, Timestamp, quantity, price)
+        VALUES (user_idIn, ISBNIt, NOW(), quantityIt, priceIt);
+
 	END LOOP get_item;
     
     CLOSE cart_cursor;
@@ -473,6 +482,61 @@ BEGIN
     SELECT user_id, username, first_name, last_name
     FROM Users
     WHERE username LIKE usernameIn AND user_id NOT IN (SELECT id FROM Managers);
+END //
+
+# Sales
+CREATE PROCEDURE `get_top_ten_books`()
+BEGIN
+    SELECT Sales.ISBN, B.title, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Books B on Sales.ISBN = B.ISBN
+	WHERE Sales.Timestamp >= LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 3 MONTH
+    AND Sales.Timestamp < LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 1 MONTH
+    GROUP BY Sales.ISBN ORDER BY Total DESC LIMIT 10;
+END //
+
+CREATE PROCEDURE `get_top_five_users`()
+BEGIN
+    SELECT username, first_name, last_name, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Users U on Sales.user_id = U.user_id
+    WHERE Sales.Timestamp >= LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 3 MONTH
+    AND Sales.Timestamp < LAST_DAY(NOW()) + INTERVAL 1 DAY - INTERVAL 1 MONTH
+    GROUP BY Sales.user_id ORDER BY Total DESC LIMIT 5;
+END //
+
+CREATE PROCEDURE `get_sales_month`()
+BEGIN
+    SELECT Sales.ISBN, B.title, SUM(Sales.price * Sales.quantity) as Total
+    FROM Sales JOIN Books B on Sales.ISBN = B.ISBN
+    WHERE MONTH(Sales.Timestamp) = MONTH(DATE_SUB(CURRENT_DATE ,INTERVAL 1 MONTH))
+    GROUP BY Sales.ISBN ORDER BY Total DESC;
+END //
+
+# Visa Utilities
+CREATE PROCEDURE `check_user_credit`(
+    IN user_idIn INT
+)
+BEGIN
+    SELECT *
+    FROM Visa
+    WHERE user_id = user_idIn;
+END //
+
+CREATE PROCEDURE `add_user_credit`(
+    IN user_idIn INT,
+    IN credit_numberIn VARCHAR(19),
+    IN expiryIn DATE
+)
+BEGIN
+    INSERT INTO Visa VALUES (user_idIn, credit_numberIn, expiryIn);
+END //
+
+CREATE PROCEDURE `update_user_credit`(
+    IN user_idIn INT,
+    IN credit_numberIn VARCHAR(19),
+    IN expiryIn DATE
+)
+BEGIN
+    UPDATE Visa SET credit_number = credit_numberIn, expiry = expiryIn WHERE user_id = user_idIn;
 END //
 
 DELIMITER ;

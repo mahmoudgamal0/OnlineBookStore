@@ -8,16 +8,25 @@
 
 <nav>
     <ol>
-        <li><a href="/manager/insert">Insert Book</a></li>
-        <li><a href="/search/u">Search Book</a></li>
-        <li><a href="/manager/orders">Book Orders</a></li>
-        <li><a href="/manager/users">Promote Users</a></li>
+        <li><a href="/search">Search Book</a></li>
+        {% if auth %}
+            <li><a href="/manager/insert">Insert Book</a></li>
+            <li><a href="/manager/orders">Book Orders</a></li>
+            <li><a href="/manager/users">Promote Users</a></li>
+            <li><a href="/manager/sales">Sales Report</a></li>
+        {% endif %}
     </ol>
 </nav>
-    {% block content %}
+{% block content %}
 
-    {% endblock %}
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+{% endblock %}
+
+{% if errors %}
+    <div>
+        {{ errors }}
+    </div>
+{% endif %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 
 </body>
 </html>

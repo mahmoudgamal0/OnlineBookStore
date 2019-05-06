@@ -20,6 +20,7 @@ from book_model import views as uview
 from manager import views as mview
 from search import views as sview
 from carts import views as cview
+from checkout import views as checkview
 
 
 urlpatterns = [
@@ -39,17 +40,24 @@ urlpatterns = [
     path('manager/modify/<slug:ISBN>', mview.modify_book),
     path('manager/orders', mview.book_orders),
     path('manager/users', mview.promote_user),
+    path('manager/sales', mview.sales),
 
     # Search Operations
-    path('search/<slug:auth>', sview.search_base),
-    path('search/<slug:auth>/ISBN/<slug:ISBN>', sview.search_book_ISBN),
-    path('search/<slug:auth>/title/<slug:title>', sview.search_book_title),
-    path('search/<slug:auth>/author/<slug:author>', sview.search_book_author),
-    path('search/<slug:auth>/publisher/<slug:publisher>', sview.search_book_publisher),
-    path('search/<slug:auth>/category/<int:category>', sview.search_book_category),
+    path('search', sview.search_base),
+    path('search/ISBN/<slug:ISBN>', sview.search_book_ISBN),
+    path('search/title/<slug:title>', sview.search_book_title),
+    path('search/author/<slug:author>', sview.search_book_author),
+    path('search/publisher/<slug:publisher>', sview.search_book_publisher),
+    path('search/category/<int:category>', sview.search_book_category),
 
     # cart operation
     path('cart/add_book', cview.add_book),
+
     path('cart/remove_book', cview.remove_book),
     path('cart/cart', cview.get_cart),
+
+
+    # Checkout Operations
+    path('checkout', checkview.checkout),
+
 ]

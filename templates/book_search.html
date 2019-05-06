@@ -3,7 +3,7 @@
 {% block content %}
 
 <body>
-    <form action="/search/m" method="GET">
+    <form action="/search" method="GET">
         {% include 'search_setup.html' %}
     </form>
 
@@ -11,15 +11,18 @@
         <ul>
             {% for book in books %}
                 <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
+
                 <form id="{{ book.0 }}">{% csrf_token %}
                     <li><input type="submit" onclick="send_request({{ book.0 }})" value="add book"></li>
                     <li><input type="submit" onclick="remove_request({{ book.0 }})" value="remove book"></li>
                 </form>
+
             {% endfor %}
         </ul>
     {% else %}
         <p>Cannot find results</p>
     {% endif %}
+
 
     <script>
 
@@ -59,6 +62,5 @@
             });
         }
     </script>
-
 
 {% endblock %}
