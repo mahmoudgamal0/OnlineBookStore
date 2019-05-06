@@ -16,7 +16,7 @@ def get_publishers_categories():
 def insert_book(request, *args, **kwargs):
 
     [publishers, categories] = get_publishers_categories()
-    errors = []
+    errors, form = [], []
     if request.method == 'POST':
         form = RawInsertModifyBookForm(request.POST)
         form.set_choices(publishers, categories)
@@ -26,11 +26,10 @@ def insert_book(request, *args, **kwargs):
                 try:
                     cursor.callproc('add_book', data.values())
                 except Exception as e:
-                    errors = e
-
-    if errors:
-        pass
-    else:
+                    errors = format_errors(e)
+        else:
+            errors = form.errors
+    if not errors:
         form = RawInsertModifyBookForm()
         form.set_choices(publishers, categories)
 
@@ -46,10 +45,10 @@ def insert_book(request, *args, **kwargs):
 
 def modify_book(request, ISBN, *args, **kwargs):
     [publishers, categories] = get_publishers_categories()
-
+    errors = []
     if request.method == 'POST':
         if 'cancel' in request.POST:
-            return redirect('../../search/m/ISBN/'+ISBN)
+            return redirect('../../search/ISBN/'+ISBN)
 
         form = RawInsertModifyBookForm(request.POST)
         form.set_choices(publishers, categories)
@@ -59,9 +58,14 @@ def modify_book(request, ISBN, *args, **kwargs):
             with connection.cursor() as cursor:
                 modified_attr = list(data.values())
                 modified_attr.insert(0, ISBN)
-                cursor.callproc('modify_book', modified_attr)
-            new_ISBN = modified_attr[1]
-            return redirect('../../search/m/ISBN/'+new_ISBN)
+                try:
+                    cursor.callproc('modify_book', modified_attr)
+                    new_ISBN = modified_attr[1]
+                    return redirect('../../search/ISBN/' + new_ISBN)
+                except Exception as e:
+                    errors = format_errors(e)
+        else:
+            errors = form.errors
     else:
         with connection.cursor() as cursor:
             cursor.callproc('get_book', [ISBN])
@@ -71,13 +75,14 @@ def modify_book(request, ISBN, *args, **kwargs):
         form.set_choices(publishers, categories)
         form.set_form_data(book[0])
 
-        context = {
-            'title': 'Insert a new Book',
-            'form': form,
-            'auth': request.session['is_manager']
-        }
+    context = {
+        'title': 'Insert a new Book',
+        'form': form,
+        'auth': request.session['is_manager'],
+        'errors': errors
+    }
 
-        return render(request, 'book_modify.html', context)
+    return render(request, 'book_modify.html', context)
 
 
 def book_orders(request, *args, **kwargs):
@@ -149,3 +154,18 @@ def sales(request, *args, **kwargs):
     }
 
     return render(request, 'manager_sales.html', context)
+
+
+def format_errors(errors):
+    import re
+    if not errors:
+        return []
+
+    err_code = errors.args[0]
+    err_column = re.findall(r"'(.*?)'", errors.args[1], re.DOTALL)[0]
+    err_msg = ''
+    if err_code == 1264:
+        err_msg = 'Wrong value entered at ' + err_column
+    elif err_code == 1062:
+        err_msg = 'A book with the same ISBN \'' + err_column + '\' already exists'
+    return err_msg
