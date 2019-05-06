@@ -20,6 +20,7 @@ from book_model import views as uview
 from manager import views as mview
 from search import views as sview
 from carts import views as cview
+from checkout import views as checkview
 
 
 urlpatterns = [
@@ -51,4 +52,7 @@ urlpatterns = [
 
     # cart operation
     path('cart/add_book', cview.add_book),
+
+    # Checkout Operations
+    path('checkout', checkview.checkout),
 ]
