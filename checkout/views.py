@@ -39,7 +39,7 @@ def checkout(request, *args, **kwargs):
     if credit:
         if datetime.datetime.now().date() < credit[0][2]:
             with connection.cursor() as cursor:
-                cursor.callproc('cart_checkout', [int(request.session['card_id'])])
+                cursor.callproc('cart_checkout', [int(request.session['card_id']), int(request.session['user_id'])])
             return redirect('/search')
         else:
             form.set_form_data(credit[0][1:])
