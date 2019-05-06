@@ -368,7 +368,7 @@ BEGIN
 END//
 
 CREATE PROCEDURE `cart_checkout` (
-	IN cart_idIn INT
+	IN cart_idIn INT,
 	IN user_idIn INT
 )
 BEGIN
@@ -399,8 +399,8 @@ BEGIN
         WHERE ISBN = ISBNIt;
         
 	-- update sales
-	INSERT INTO Sales (user_id, ISBN, Timestamp, quantity, price)
-	VALUES (user_idIn, ISBNIt, NOW(), quantityIt, priceIt);
+        INSERT INTO Sales (user_id, ISBN, Timestamp, quantity, price)
+        VALUES (user_idIn, ISBNIt, NOW(), quantityIt, priceIt);
 
 	END LOOP get_item;
     
