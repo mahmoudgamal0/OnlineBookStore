@@ -147,6 +147,17 @@ def update_user(request):
 
 def logout(request):
     # logic before logout
+    try:
+        cart_id = request.session['card_id']
+    except Exception as e:
+        return redirect('/login/not logged in')
+    sql = call_procedure('cart_empty', [str(cart_id)])
+    mydb, cur = connect()
+    cur.execute(sql)
+    sql = call_procedure('cart_remove', [str(cart_id)])
+    cur.execute(sql)
+    mydb.commit()
+    mydb.close()
     request.session['user_id'] = None
     request.session['card_id'] = None
     return render(request,'login.html',{})
