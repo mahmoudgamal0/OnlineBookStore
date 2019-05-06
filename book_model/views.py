@@ -147,9 +147,9 @@ def update_user(request):
 
 def logout(request):
     # logic before logout
-    try:
-        cart_id = request.session['card_id']
-    except Exception as e:
+
+    cart_id = request.session['card_id']
+    if(cart_id == None):
         return redirect('/login/not logged in')
     sql = call_procedure('cart_empty', [str(cart_id)])
     mydb, cur = connect()
@@ -184,5 +184,5 @@ def call_procedure(procedure_name,pram = None,out_pram = None):
             if (i != len(out_pram) - 1):
                 sql += ","
 
-    sql += ")"
+    sql += ");"
     return sql

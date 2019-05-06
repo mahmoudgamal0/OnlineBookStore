@@ -45,11 +45,10 @@ def get_cart(request):
         return redirect('/login/not logged in')
 
     carts = []
-    sql = 'select * from Carts natural join Cart_Items where Carts.user_id='
-    sql += str(user_id)
-    sql += ' and ' + 'Cart_Items.cart_id='+str(cart_id)+';'
-    db, cur = connect()
+    sql = call_procedure('view_cart', [str(cart_id)])
+    print(sql)
+    cur = connection.cursor()
     cur.execute(sql)
     carts = cur.fetchall()
-    db.close()
+
     return render(request, 'cart.html', {'carts': carts})
