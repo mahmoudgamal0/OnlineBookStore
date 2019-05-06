@@ -11,8 +11,8 @@ def search_base(request, *args, **kwargs):
 
     if 'search' in request.GET or 'selector' in request.GET:
         if 'selector' in request.GET:
-            return redirect("category/{0}".format(int(request.GET.get('selector'))))
-        return redirect("{0}/{1}".format(request.GET['group'], request.GET.get('search_field')))
+            return redirect("search/category/{0}".format(int(request.GET.get('selector'))))
+        return redirect("search/{0}/{1}".format(request.GET['group'], request.GET.get('search_field')))
 
     return render(request, get_view_to_render(request), context)
 
@@ -38,6 +38,7 @@ def search_book_category(request, category, *args, **kwargs):
 
 
 def search_book(request, procedure, args):
+    errors = []
     with connection.cursor() as cursor:
         try:
             cursor.callproc(procedure, args)
