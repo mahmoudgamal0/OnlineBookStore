@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>login</title>
-</head>
-<body>
-    {% if error %}
-        {{ error }}
-    {% endif %}
+{% extends 'base.html' %}
+{% block content %}
+    <body>
 
-    {% if msg_err %}
-        {{ msg_err }}
-    {% endif %}
 
     <form method="POST" action=".">
         {% csrf_token %}
@@ -21,7 +11,7 @@
         <input type="password" name="password"><br>
         <input type="submit" value="login">
     </form>
-    <a href="/signup/">signup</a>
+    <a href="/signup">signup</a>
 
-</body>
-</html>
+    </body>
+{% endblock %}

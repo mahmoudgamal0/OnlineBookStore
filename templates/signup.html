@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>signup page</title>
-</head>
-<body>
-
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
-
+{% extends 'base.html' %}
+{% block content %}
+    <body>
     <form method="POST" action=".">
         {% csrf_token %}
         User name:<br>
@@ -28,6 +19,5 @@
         <input type="text" name="shipping_address"><br>
         <input type="submit" value="register">
     </form>
-
-</body>
-</html>
+    </body>
+{% endblock %}
