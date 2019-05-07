@@ -1,5 +1,3 @@
-
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db import connection
 import mysql.connector
@@ -15,34 +13,32 @@ def connect():
     return mydb, cur
 
 
-# Create your views here.
-def home_get(request,msg_err = None):
-    mydb, cur = connect()
-    cur = connection.cursor()
-    cur.execute("SELECT * FROM Users")
-    test_data = cur.fetchall()
-    try:
-        session_id = request.session['user_id']
-    except Exception:
-        return render(request, 'home.html', {'data': test_data, 'error': msg_err})
-    mydb.close()
-    return render(request,'home.html', {'data': test_data,'session_id': session_id, 'error': msg_err})
+# # Create your views here.
+# def home_get(request,msg_err = None):
+#     mydb, cur = connect()
+#     cur = connection.cursor()
+#     cur.execute("SELECT * FROM Users")
+#     test_data = cur.fetchall()
+#     try:
+#         session_id = request.session['user_id']
+#     except Exception:
+#         return render(request, 'home.html', {'data': test_data, 'error': msg_err})
+#     mydb.close()
+#     return render(request,'home.html', {'data': test_data,'session_id': session_id, 'error': msg_err})
 
+#
+# def next(request):
+#     x = request.session["use"]
+#     request.session["use"] = "0"
+#     return HttpResponse("x"+x)
 
-def next(request):
-    x = request.session["use"];
-    request.session["use"] = "0";
-    return HttpResponse("x"+x);
+def home(request):
+    return redirect('/search')
 
 
 def signup(request):
-    try:
-        if(request.session['user_id'] != None):
-            return redirect('/home/you logged in')
-    except Exception as e:
-        print(e)
     if(request.method == 'GET'):
-        return render(request,'signup.html',{})
+        return render(request,'signup.html',{'title': 'Signup'})
     elif(request.method == 'POST'):
         data = []
         data.append(request.POST.get('user_name'))
@@ -59,7 +55,7 @@ def signup(request):
             cur.execute(sql)
         except mysql.connector.Error as err:
             mydb.close()
-            return render(request,'signup.html', {'error': err.msg})
+            return render(request,'signup.html', {'title': 'Signup', 'errors': err.msg})
         cur.execute('select @x')
         session_data = {}
         session_data['user_id'] = cur.fetchall()[0][0]
@@ -69,12 +65,12 @@ def signup(request):
         mydb.close()
         request.session['user_id'] = session_data['user_id']
         request.session['card_id'] = session_data['card_id']
-        return home_get(request)
+        return redirect('/search')
 
 
 def login(request,msg_err = None):
     if (request.method == 'GET'):
-        return render(request, 'login.html', {'msg_err': msg_err})
+        return render(request, 'login.html', {'title': 'Login', 'errors': msg_err})
     elif (request.method == 'POST'):
         data = {}
         data['email'] = request.POST.get('email')
@@ -85,7 +81,7 @@ def login(request,msg_err = None):
             cur.execute(sql)
         except mysql.connector.Error as err:
             mydb.close()
-            return render(request,'login.html', {'error': err.msg})
+            return render(request,'login.html', {'title': 'Login', 'errors': err.msg})
         cur.execute("select @x")
         request.session['user_id'] = cur.fetchall()[0][0]
         r = request.session['user_id']
@@ -98,22 +94,19 @@ def login(request,msg_err = None):
             request.session['is_manager'] = False
         mydb.commit()
         mydb.close()
-        return HttpResponse(str(r)+" hi")
+        return redirect('/search')
+
 
 def update_user(request):
-    data = {}
-    if(request.session['user_id'] == None):
-        return redirect('/login/not logged in')
+    data = {'title': 'Update User Info'}
 
     if (request.method == 'GET'):
         # get data into hash an send it
-        print(request.session['user_id'])
         sql = "select * from Users where "+"user_id = "+str(request.session['user_id'])+";"
-        print(sql)
         try:
             mydb, cur = connect()
             cur.execute(sql)
-            d = cur.fetchall();
+            d = cur.fetchall()
             data['user_name'] = d[0][1]
             data['password'] = d[0][2]
             data['lname'] = d[0][3]
@@ -123,9 +116,8 @@ def update_user(request):
             data['shipping_address'] = d[0][7]
             mydb.close()
         except mysql.connector.Error as err:
-            return render(request, 'login.html', {'error': err.msg})
-        except Exception:
-            return HttpResponse("x");
+            return render(request, 'login.html', {'title': 'Login', 'errors': err.msg})
+
         return render(request, 'update.html', data)
     elif (request.method == 'POST'):
         mydb, cur = connect()
@@ -142,7 +134,7 @@ def update_user(request):
         cur.execute(sql)
         mydb.commit()
         mydb.close()
-        return redirect('/home/')
+        return redirect('/search')
 
 
 def logout(request):
@@ -161,10 +153,6 @@ def logout(request):
     request.session['user_id'] = None
     request.session['card_id'] = None
     return render(request,'login.html',{})
-
-
-
-
 
 
 def call_procedure(procedure_name,pram = None,out_pram = None):

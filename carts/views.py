@@ -3,14 +3,11 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from book_model.views import connect, call_procedure
 
-# Create your views here.
+
 def add_book(request):
     if(request.method == 'POST'):
         data = []
-        try:
-            cart_id = request.session['card_id']
-        except Exception as e:
-            return HttpResponse("user not logged in")
+        cart_id = request.session['card_id']
         data.append(str(cart_id))
         data.append(request.POST.get('ISBN'))
         data.append(str(1))
@@ -21,13 +18,11 @@ def add_book(request):
         db.close()
         return HttpResponse("success")
 
+
 def remove_book(request):
     if (request.method == 'POST'):
         data = []
-        try:
-            cart_id = request.session['card_id']
-        except Exception as e:
-            return HttpResponse("user not logged in")
+        cart_id = request.session['card_id']
         data.append(str(cart_id))
         data.append(request.POST.get('ISBN'))
         sql = call_procedure('cart_exclude_book', data)
@@ -37,12 +32,11 @@ def remove_book(request):
         db.close()
         return HttpResponse("success")
 
+
 def get_cart(request):
 
     cart_id = request.session['card_id']
     user_id = request.session['user_id']
-    if(cart_id == None or user_id == None):
-        return redirect('/login/not logged in')
 
     carts = []
     sql = call_procedure('view_cart', [str(cart_id)])

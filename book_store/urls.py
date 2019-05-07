@@ -24,15 +24,16 @@ from checkout import views as checkview
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # User operations
-    re_path(r'home/(?P<msg_err>[A-Za-z\s]+)?', uview.home_get),
-    path('next/', uview.next),
-    path('signup/', uview.signup),
-    re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', uview.login),
-    path('logout/', uview.logout),
-    path('update_user/', uview.update_user),
+    # path('admin/', admin.site.urls),
+    # re_path(r'home/(?P<msg_err>[A-Za-z\s]+)?', uview.home_get),
+    # path('next/', uview.next),
 
+    # User Operations
+    path('', uview.home),
+    path('signup', uview.signup),
+    re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', uview.login),
+    path('logout', uview.logout),
+    path('update_user', uview.update_user),
 
 
     # Manager Operations
@@ -52,10 +53,8 @@ urlpatterns = [
 
     # cart operation
     path('cart/add_book', cview.add_book),
-
     path('cart/remove_book', cview.remove_book),
     path('cart/cart', cview.get_cart),
-
 
     # Checkout Operations
     path('checkout', checkview.checkout),
