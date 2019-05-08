@@ -5,9 +5,17 @@
     <title>Cart</title>
 </head>
 <body>
-    {% for cart in carts  %}
-        {{ cart }}<br>
-    {% endfor %}
+    <form method="POST" action="/checkout">
+        {% csrf_token %}
+        {% for cart in carts  %}
+            title: {{ cart.6 }}<br>
+            price: {{ cart.3 }}<br>
+            count:
+            <input type="text" name="user_name" value="{{ cart.2 }}"><br>
+            <br>
+        {% endfor %}
+        <input type="submit" value="checkout">
+    </form>
 
 </body>
 </html>
