@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update">
-        <input type="submit" name="cancel" value="Cancel">
+        {{ form | crispy }}
+        <div class="row justify-content-center mb-lg-5">
+            <input type="submit" value="Update" class="btn btn-primary mr-3">
+            <input type="submit" name="cancel" value="Cancel" class="btn btn-danger">
+        </div>
     </form>
 {% endblock %}

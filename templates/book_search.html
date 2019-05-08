@@ -2,15 +2,19 @@
 
 {% block content %}
 
-<body>
+    <body>
     <form action="/search" method="GET">
         {% include 'search_setup.html' %}
     </form>
 
     {% if books %}
-        <ul>
+        <ul class="list-group">
             {% for book in books %}
-                <li><a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a></li>
+                <li class="list-group-item">
+                    <div>
+                        <a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a>
+                    </div>
+                </li>
 
                 <form id="{{ book.0 }}">{% csrf_token %}
                     <li><input type="submit" onclick="send_request({{ book.0 }})" value="add book"></li>
@@ -20,23 +24,25 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>Cannot find results</p>
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
     {% endif %}
 
 
     <script>
 
         function send_request(isbn) {
-            $(document).on('submit','#'+isbn,function (e) {
+            $(document).on('submit', '#' + isbn, function (e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
                     url: '/cart/add_book',
-                    data:{
+                    data: {
                         ISBN: isbn,
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
+                    success: function (result) {
                         console.log(result);
                         alert('ok');
                     }
@@ -45,16 +51,16 @@
         }
 
         function remove_request(isbn) {
-            $(document).on('submit','#'+isbn,function (e) {
+            $(document).on('submit', '#' + isbn, function (e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
                     url: '/cart/remove_book',
-                    data:{
+                    data: {
                         ISBN: isbn,
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
+                    success: function (result) {
                         console.log(result);
                         alert('ok');
                     }

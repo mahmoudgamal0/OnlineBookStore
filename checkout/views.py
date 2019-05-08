@@ -12,7 +12,7 @@ def checkout(request, *args, **kwargs):
 
         if form.is_valid():
             data = list(form.cleaned_data.values())
-            if request.POST['submit'] == 'insert':
+            if request.POST['submit'] == 'Insert':
                 with connection.cursor() as cursor:
                     cursor.callproc('add_user_credit', [int(request.session['user_id']), data[0], data[1]])
             else:
@@ -32,7 +32,7 @@ def checkout(request, *args, **kwargs):
         'title': '',
         'auth': request.session['is_manager'],
         'form': form,
-        'value': 'insert',
+        'value': 'Insert',
         'errors': errors
     }
 
@@ -43,5 +43,5 @@ def checkout(request, *args, **kwargs):
             return redirect('/search')
         else:
             form.set_form_data(credit[0][1:])
-            context['value'] = 'update'
+            context['value'] = 'Update'
     return render(request, 'credit_info.html', context)

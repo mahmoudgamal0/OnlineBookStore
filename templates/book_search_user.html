@@ -2,26 +2,33 @@
 
 {% block content %}
 
-<body>
+    <body>
     <form action="/search" method="GET">
         {% include 'search_setup.html' %}
     </form>
 
     {% if books %}
-        <ul>
+        <ul class="list-group mr-xl-5 ml-xl-5">
             {% for book in books %}
-                <li>
-                    <div>Title: {{ book.1 }}, Price:{{ book.4}}
-                        <form id="{{ book.0 }}">{% csrf_token %}
-                            <li><input type="submit" onclick="send_request({{ book.0 }})" value="add book"></li>
-                            <li><input type="submit" onclick="remove_request({{ book.0 }})" value="remove book"></li>
+                <li class="list-group-item" id="{{ book.0 }}">
+                    <div class="row justify-content-center">
+                        <div class="col-4">
+                            Title: <strong>{{ book.1 }}</strong> <br/>
+                            Price: {{ book.4 }}
+                        </div>
+                        <form method="post" id="add_to_cart">
+                            {% csrf_token %}
+                            <input type="submit" onclick="send_request({{ book.0 }})" value="add book">
+                            <input type="submit" onclick="remove_request({{ book.0 }})" value="remove book">
                         </form>
                     </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Cannot find results</p>
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
     {% endif %}
 
     <script>
@@ -42,7 +49,6 @@
                 });
             });
         }
-
         function remove_request(isbn) {
             $(document).on('submit','#'+isbn,function (e) {
                 e.preventDefault();

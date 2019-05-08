@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'book_model.middleware.login_middleware.LoginMiddleware',
+    'book_store.middleware.login_middleware.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'book_store.urls'
@@ -126,3 +127,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
