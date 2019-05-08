@@ -1,15 +1,10 @@
-USE bookstore;
+USE `bookstore`;
 
-DELIMITER ;NOTSC
+DELIMITER $$
 
-# Missing trigger
-CREATE TRIGGER after_Cart_Items_update
-    AFTER UPDATE ON Cart_Items
-    FOR EACH ROW
-BEGIN
-	UPDATE Cart_Items
-    SET total_price = price * quantity
-    WHERE cart_id = NEW.cart_id AND ISBN = NEW.ISBN;
-END;NOTSC
-
+DROP TRIGGER IF EXISTS bookstore.Cart_Items_AFTER_UPDATE$$
+USE `bookstore`$$
+CREATE DEFINER=`root`@`localhost` TRIGGER `bookstore`.`Cart_Items_AFTER_UPDATE` 
+BEFORE UPDATE ON `Cart_Items` FOR EACH ROW
+set new.total_price = new.price * new.quantity;$$
 DELIMITER ;
