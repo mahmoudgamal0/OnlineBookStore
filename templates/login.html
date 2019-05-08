@@ -2,16 +2,24 @@
 {% block content %}
     <body>
 
+    <form method="POST" action=".">  {% csrf_token %}
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" placeholder="email@example.com" name="email">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <input type="submit" class="btn btn-primary mr-lg-2" value="Login">
+            <a href="/signup" class="btn btn-outline-info">Signup</a>
+        </div>
 
-    <form method="POST" action=".">
-        {% csrf_token %}
-        Email:<br>
-        <input type="text" name="email"><br>
-        password:<br>
-        <input type="password" name="password"><br>
-        <input type="submit" value="login">
     </form>
-    <a href="/signup">signup</a>
-
     </body>
 {% endblock %}

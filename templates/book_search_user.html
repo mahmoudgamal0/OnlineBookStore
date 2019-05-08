@@ -2,38 +2,44 @@
 
 {% block content %}
 
-<body>
+    <body>
     <form action="/search" method="GET">
         {% include 'search_setup.html' %}
     </form>
 
     {% if books %}
-        <ul>
+        <ul class="list-group mr-xl-5 ml-xl-5">
             {% for book in books %}
-                <li>
-                    <div>Title: {{ book.1 }}, Price:{{ book.4}}
+                <li class="list-group-item">
+                    <div class="row justify-content-center">
+                        <div class="col-4">
+                            Title: <strong>{{ book.1 }}</strong> <br/>
+                            Price: {{ book.4 }}
+                        </div>
                         <form method="post" id="add_to_cart">
                             {% csrf_token %}
-                            <input type="submit" value="To Cart"/>
+                            <input type="submit" value="Add to Cart" class="btn btn-info "/>
                         </form>
                     </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Cannot find results</p>
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
     {% endif %}
 
     <script>
-        $(document).on('submit','add_to_cart',function(e){
+        $(document).on('submit', 'add_to_cart', function (e) {
             e.preventDefault();
             $.ajax({
                 type: 'POST',
                 url: '/cart/add_book',
-                data:{
+                data: {
                     //book_ispn: ISBN
                 },
-                success:function () {
+                success: function () {
 
                 }
             });

@@ -1,35 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
 </head>
 <body>
 
-<nav>
-    <ol>
-        <li><a href="/search">Search Book</a></li>
-        {% if auth %}
-            <li><a href="/manager/insert">Insert Book</a></li>
-            <li><a href="/manager/orders">Book Orders</a></li>
-            <li><a href="/manager/users">Promote Users</a></li>
-            <li><a href="/manager/sales">Sales Report</a></li>
-            <li><a href="/cart/cart">View Cart</a></li>
-            <li><a href="/update_user">Update Info</a></li>
-        {% endif %}
-        <li><a href="/logout">Logout</a></li>
-    </ol>
-</nav>
-{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-lg-5">
+    <a class="navbar-brand" href="/">Search</a>
+    <button class="navbar-toggler" type="button"
+            data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            {% if auth %}
+                <a class="nav-item nav-link active" href="/manager/insert">Insert Book <span
+                        class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="/manager/orders">Book Orders</a>
+                <a class="nav-item nav-link" href="/manager/users">Promote Users</a>
+                <a class="nav-item nav-link" href="/update_user">Update Info</a>
+                <a class="nav-item nav-link" href="/manager/sales">Sales Report</a>
+            {% else %}
+                <a class="nav-item nav-link" href="/cart/cart">View Cart</a>
+            {% endif %}
+            <a class="nav-item nav-link" href="/logout">Logout</a>
 
-{% endblock %}
-
-{% if errors %}
-    <div>
-        {{ errors }}
+        </div>
     </div>
-{% endif %}
-<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+</nav>
+
+<div class="container justify-content-center">
+    {% block content %}
+
+    {% endblock %}
+
+    {% if errors %}
+        <div class="alert alert-danger mt-lg-3" role="alert">
+            {{ errors }}
+        </div>
+    {% endif %}
+</div>
+
 
 </body>
 </html>

@@ -3,27 +3,37 @@
 {% block content %}
     {% if orders %}
         <form method="POST"> {% csrf_token %}
-            <table>
+            <table class="table">
+                <thead class="thead-dark">
                 <tr>
-                    <th>Order id</th>
-                    <th>Quantity</th>
-                    <th>Publisher id</th>
-                    <th>ISBN</th>
-                    <th>Confirm</th>
+                    <th scope="col">Order id</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Publisher id</th>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Confirm</th>
+
                 </tr>
+                </thead>
+                <tbody>
                 {% for order in orders %}
                     <tr>
                         <th>{{ order.0 }}</th>
                         <th>{{ order.1 }}</th>
                         <th>{{ order.2 }}</th>
-                        <th>{{ order.4 }}</th>
+                        <th>{{ order.3 }}</th>
                         <th><input type="checkbox" name={{ order.0 }}></th>
                     </tr>
                 {% endfor %}
+                </tbody>
             </table>
-        <input type="submit" name="confirm" value="Confirm Orders">
+            <div class="row justify-content-center">
+                <input type="submit" name="confirm" value="Confirm Orders" class="btn btn-outline-primary">
+            </div>
         </form>
+
     {% else %}
-        <p>No Orders</p>
+        <div class="alert alert-success" role="alert">
+            No orders out there!
+        </div>
     {% endif %}
 {% endblock %}
