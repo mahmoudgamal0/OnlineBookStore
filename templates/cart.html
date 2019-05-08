@@ -1,21 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Cart</title>
-</head>
-<body>
-    <form method="POST" action="/checkout">
+{% extends 'base.html' %}
+{% block content %}
+
+    <form method="POST" action="update">
         {% csrf_token %}
         {% for cart in carts  %}
             title: {{ cart.6 }}<br>
             price: {{ cart.3 }}<br>
             count:
-            <input type="text" name="user_name" value="{{ cart.2 }}"><br>
+            <input type="text" name="{{ cart.1 }}" value="{{ cart.2 }}"><br>
             <br>
         {% endfor %}
         <input type="submit" value="checkout">
     </form>
 
-</body>
-</html>
+{% endblock %}

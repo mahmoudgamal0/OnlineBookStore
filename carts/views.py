@@ -46,3 +46,21 @@ def get_cart(request):
     carts = cur.fetchall()
 
     return render(request, 'cart.html', {'carts': carts})
+
+
+def update(request):
+    cart_id = request.session['card_id']
+    user_id = request.session['user_id']
+
+    print(request.POST)
+    db, cur = connect()
+    sql = 'update Cart_Items set quantity='
+    for key in request.POST:
+        if(key != 'csrfmiddlewaretoken'):
+            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN='+str(key)+';'
+            print(exec_sql)
+            cur.execute(exec_sql)
+            db.commit()
+
+
+    return redirect('/checkout')
