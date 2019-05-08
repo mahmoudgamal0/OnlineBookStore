@@ -98,7 +98,7 @@ def login(request,msg_err = None):
 
 
 def update_user(request):
-    data = {'title': 'Update User Info'}
+    data = {'title': 'Update User Info', 'auth': request.session['is_manager']}
 
     if (request.method == 'GET'):
         # get data into hash an send it
