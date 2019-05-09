@@ -8,8 +8,9 @@ def add_book(request):
     if(request.method == 'POST'):
         data = []
         cart_id = request.session['card_id']
+
         data.append(str(cart_id))
-        data.append(request.POST.get('ISBN'))
+        data.append(str(request.POST.get('ISBN')))
         data.append(str(1))
         sql = call_procedure('cart_include_book', data)
         db, cur = connect()
@@ -23,6 +24,7 @@ def remove_book(request):
     if (request.method == 'POST'):
         data = []
         cart_id = request.session['card_id']
+        print(cart_id)
         data.append(str(cart_id))
         data.append(request.POST.get('ISBN'))
         sql = call_procedure('cart_exclude_book', data)

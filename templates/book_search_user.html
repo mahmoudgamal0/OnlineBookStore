@@ -18,8 +18,8 @@
                         </div>
                         <form method="post" id="add_to_cart">
                             {% csrf_token %}
-                            <input type="submit" onclick="send_request({{ book.0 }})" value="add book">
-                            <input type="submit" onclick="remove_request({{ book.0 }})" value="remove book">
+                            <input type="submit" onclick="send_request({{ book.0 }})" value="add book"
+                                   id="action{{ book.0 }}">
                         </form>
                     </div>
                 </li>
@@ -44,7 +44,8 @@
                     },
                     success:function (result) {
                         console.log(result);
-                        alert('ok');
+                        document.getElementById('action'+isbn).onclick = function() {remove_request(isbn)};
+                        document.getElementById('action'+isbn).value = 'remove_book';
                     }
                 });
             });
@@ -61,7 +62,8 @@
                     },
                     success:function (result) {
                         console.log(result);
-                        alert('ok');
+                        document.getElementById('action'+isbn).onclick = function() {send_request(isbn)};
+                        document.getElementById('action'+isbn).value = 'add_book';
                     }
                 });
             });
