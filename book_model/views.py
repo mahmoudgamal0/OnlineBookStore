@@ -152,7 +152,7 @@ def logout(request):
     mydb.close()
     request.session['user_id'] = None
     request.session['card_id'] = None
-    return render(request,'login.html',{})
+    return redirect('/')
 
 
 def call_procedure(procedure_name,pram = None,out_pram = None):
