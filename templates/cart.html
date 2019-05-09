@@ -25,7 +25,7 @@
             var id = "action"+isbn;
 
             if($(this)[0].innerHTML == "remove"){
-                success = false;
+
                 $.ajax({
                     type: 'POST',
                     url: '/cart/remove_book',

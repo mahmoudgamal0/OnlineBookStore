@@ -16,10 +16,10 @@
                             Title: <strong>{{ book.1 }}</strong> <br/>
                             Price: {{ book.4 }}
                         </div>
-                        <form method="post" id="add_to_cart">
+                        <form method="post" id="{{ book.0 }}">
                             {% csrf_token %}
-                            <input type="submit" onclick="send_request({{ book.0 }})" value="add book"
-                                   id="action{{ book.0 }}">
+
+                            <button class="action" id="action{{ book.0 }}" value="{{ book.0 }}">add</button>
                         </form>
                     </div>
                 </li>
@@ -32,6 +32,42 @@
     {% endif %}
 
     <script>
+
+        $('.action').click(function (e) {
+           e.preventDefault();
+
+            var isbn = $(this).val();
+            var id = "action"+isbn;
+            if($(this)[0].innerHTML == "remove"){
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/remove_book',
+                    data:{
+                        ISBN: $(this).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success:function (result) {
+                            console.log('remove');
+                            document.getElementById(id).innerHTML = 'add';
+                    }
+                });
+            }else{
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/add_book',
+                    data:{
+                        ISBN: $(this).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success:function (result) {
+                            console.log('add');
+                            document.getElementById(id).innerHTML = 'remove';
+                    }
+                });
+            }
+        });
+
+
         function send_request(isbn) {
             $(document).on('submit','#'+isbn,function (e) {
                 e.preventDefault();
