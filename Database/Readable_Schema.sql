@@ -1,24 +1,8 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema bookstore
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema bookstore
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `bookstore` DEFAULT CHARACTER SET utf8 ;
 USE `bookstore` ;
 
 -- -----------------------------------------------------
 -- Table `bookstore`.`Publisher`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Publisher` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Publisher` (
   `publisher_id` INT NOT NULL,
   `name` VARCHAR(50) NULL,
@@ -31,8 +15,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Category`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Category` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Category` (
   `category_id` INT NOT NULL,
   `category_name` VARCHAR(45) NOT NULL,
@@ -43,8 +25,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Books`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Books` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Books` (
   `ISBN` VARCHAR(25) NOT NULL,
   `title` VARCHAR(60) NOT NULL,
@@ -75,8 +55,6 @@ PACK_KEYS = Default;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Book_Authors`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Book_Authors` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Book_Authors` (
   `ISBN` VARCHAR(25) NOT NULL,
   `author_name` VARCHAR(50) NOT NULL,
@@ -93,8 +71,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Mng_Order`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Mng_Order` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Mng_Order` (
   `order_id` INT NOT NULL AUTO_INCREMENT,
   `quantity` INT NOT NULL,
@@ -119,8 +95,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Users` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
@@ -139,8 +113,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Carts`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Carts` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Carts` (
   `cart_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
@@ -157,8 +129,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Cart_Items`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Cart_Items` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Cart_Items` (
   `cart_id` INT NOT NULL,
   `ISBN` VARCHAR(25) NOT NULL,
@@ -182,8 +152,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Managers`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Managers` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Managers` (
   `id` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -198,8 +166,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Sales`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Sales` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Sales` (
   `user_id` INT NOT NULL,
   `ISBN` VARCHAR(25) NOT NULL,
@@ -224,8 +190,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Visa`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bookstore`.`Visa` ;
-
 CREATE TABLE IF NOT EXISTS `bookstore`.`Visa` (
   `user_id` INT NOT NULL,
   `credit_number` VARCHAR(19) NOT NULL,
@@ -238,13 +202,9 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`Visa` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-USE `bookstore`;
 
 DELIMITER $$
 
-USE `bookstore`$$
-DROP TRIGGER IF EXISTS `bookstore`.`Books_AFTER_UPDATE` $$
-USE `bookstore`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `bookstore`.`Books_AFTER_UPDATE` AFTER UPDATE ON `Books` FOR EACH ROW
 BEGIN
 	IF NEW.quantity < NEW.minimum_threshold AND OLD.quantity > NEW.minimum_threshold THEN
@@ -254,9 +214,6 @@ BEGIN
 END$$
 
 
-USE `bookstore`$$
-DROP TRIGGER IF EXISTS `bookstore`.`Mng_Order_BEFORE_DELETE` $$
-USE `bookstore`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `bookstore`.`Mng_Order_BEFORE_DELETE` BEFORE DELETE ON `Mng_Order` FOR EACH ROW
 BEGIN
 	UPDATE Books
@@ -266,10 +223,6 @@ END$$
 
 
 DELIMITER ;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
 -- Data for table `bookstore`.`Category`

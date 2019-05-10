@@ -33,7 +33,7 @@ urlpatterns = [
     path('signup/', uview.signup),
     re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', uview.login),
     path('logout/', uview.logout),
-    path('update_user/', uview.update_user),
+    re_path(r'update_user/(?P<msg_err>[A-Za-z\s]+)?', uview.update_user),
 
 
     # Manager Operations

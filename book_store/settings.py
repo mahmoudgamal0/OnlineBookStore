@@ -129,3 +129,5 @@ STATIC_URL = '/static/'
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# APPEND_SLASH = False

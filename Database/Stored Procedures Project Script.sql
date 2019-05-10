@@ -367,6 +367,20 @@ BEGIN
     WHERE cart_id = cart_idIn;
 END//
 
+CREATE PROCEDURE `top_cart_checkout`
+(IN cart_idIn INT,
+IN user_idIn INT)
+BEGIN
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    proc_exit:BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Custom error';
+    END;
+    START TRANSACTION;
+	CALL cart_checkout(cart_idIn, user_idIn);
+	COMMIT;
+END//
+
 CREATE PROCEDURE `cart_checkout` (
 	IN cart_idIn INT,
 	IN user_idIn INT
@@ -381,8 +395,9 @@ BEGIN
     FOR	SELECT ISBN, quantity, price
 		FROM Cart_Items
         WHERE cart_id = cart_idIn;
-	
-    DECLARE CONTINUE HANDLER 
+
+
+    DECLARE CONTINUE HANDLER
 	FOR NOT FOUND SET finished = 1;
     
     OPEN cart_cursor;
@@ -392,7 +407,8 @@ BEGIN
         IF finished = 1 THEN
 			LEAVE get_item;
 		END IF;
-        
+
+
 	-- update quantity of books
         UPDATE Books
         SET quantity = quantity - quantityIt
