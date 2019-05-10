@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db import connection
 from .forms import RawVisaForm
+from manager.views import format_errors
 import datetime
 
 
@@ -18,7 +19,7 @@ def checkout(request, *args, **kwargs):
             else:
                 with connection.cursor() as cursor:
                     cursor.callproc('update_user_credit', [int(request.session['user_id']), data[0], data[1]])
-            return redirect('/search')
+            return redirect('/cart/cart')
 
         errors = form.errors
 
@@ -38,9 +39,16 @@ def checkout(request, *args, **kwargs):
 
     if credit:
         if datetime.datetime.now().date() < credit[0][2]:
-            with connection.cursor() as cursor:
-                cursor.callproc('cart_checkout', [int(request.session['card_id']), int(request.session['user_id'])])
-            return redirect('/search')
+
+            try:
+                with connection.cursor() as cursor:
+                    cursor.callproc('cart_checkout', [int(request.session['card_id']), int(request.session['user_id'])])
+                with connection.cursor() as cursor:
+                    cursor.callproc('cart_empty', [int(request.session['manager_id'])])
+                return redirect('/search')
+            except Exception as e:
+                print(e)
+                return redirect('/cart/cart/'+format_errors(e))
         else:
             form.set_form_data(credit[0][1:])
             context['value'] = 'Update'

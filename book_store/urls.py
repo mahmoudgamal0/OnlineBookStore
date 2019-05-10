@@ -54,7 +54,7 @@ urlpatterns = [
     # cart operation
     path('cart/add_book', cview.add_book),
     path('cart/remove_book', cview.remove_book),
-    path('cart/cart', cview.get_cart),
+    re_path(r'cart/cart/(?P<err>[A-Za-z\s]+)?', cview.get_cart),
     path('cart/update', cview.update),
 
     # Checkout Operations

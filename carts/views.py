@@ -35,7 +35,7 @@ def remove_book(request):
         return HttpResponse("success")
 
 
-def get_cart(request):
+def get_cart(request, err=None):
 
     cart_id = request.session['card_id']
     user_id = request.session['user_id']
@@ -46,8 +46,7 @@ def get_cart(request):
     cur = connection.cursor()
     cur.execute(sql)
     carts = cur.fetchall()
-
-    return render(request, 'cart.html', {'carts': carts})
+    return render(request, 'cart.html', {'carts': carts, 'errors': err})
 
 
 def update(request):
@@ -59,7 +58,7 @@ def update(request):
     sql = 'update Cart_Items set quantity='
     for key in request.POST:
         if(key != 'csrfmiddlewaretoken'):
-            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN='+str(key)+';'
+            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN=\''+str(key)+'\';'
             print(exec_sql)
             cur.execute(exec_sql)
             db.commit()
