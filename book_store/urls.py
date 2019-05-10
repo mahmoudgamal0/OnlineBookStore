@@ -14,11 +14,50 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from book_model import views
+from django.urls import path,re_path
+from book_model import views as uview
+
+from manager import views as mview
+from search import views as sview
+from carts import views as cview
+from checkout import views as checkview
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('home/', views.home_get),
+    # path('admin/', admin.site.urls),
+    # re_path(r'home/(?P<msg_err>[A-Za-z\s]+)?', uview.home_get),
+    # path('next/', uview.next),
+
+    # User Operations
+    path('', uview.home),
+    path('signup/', uview.signup),
+    re_path(r'login/(?P<msg_err>[A-Za-z\s]+)?', uview.login),
+    path('logout/', uview.logout),
+    re_path(r'update_user/(?P<msg_err>[A-Za-z\s]+)?', uview.update_user),
+
+
+    # Manager Operations
+    path('manager/insert', mview.insert_book),
+    path('manager/modify/<slug:ISBN>', mview.modify_book),
+    path('manager/orders', mview.book_orders),
+    path('manager/users', mview.promote_user),
+    path('manager/sales', mview.sales),
+
+    # Search Operations
+    path('search', sview.search_base),
+    path('search/ISBN/<slug:ISBN>', sview.search_book_ISBN),
+    path('search/title/<slug:title>', sview.search_book_title),
+    path('search/author/<slug:author>', sview.search_book_author),
+    path('search/publisher/<slug:publisher>', sview.search_book_publisher),
+    path('search/category/<int:category>', sview.search_book_category),
+
+    # cart operation
+    path('cart/add_book', cview.add_book),
+    path('cart/remove_book', cview.remove_book),
+    re_path(r'cart/cart/(?P<err>[A-Za-z\s]+)?', cview.get_cart),
+    path('cart/update', cview.update),
+
+    # Checkout Operations
+    path('checkout', checkview.checkout),
+
 ]

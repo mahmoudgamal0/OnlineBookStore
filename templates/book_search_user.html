@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <body>
+    <form action="/search" method="GET">
+        {% include 'search_setup.html' %}
+    </form>
+
+    {% if books %}
+        <ul class="list-group mr-xl-5 ml-xl-5">
+            {% for book in books %}
+                <li class="list-group-item" id="{{ book.0 }}">
+                    <div class="row justify-content-center">
+                        <div class="col-4">
+                            Title: <strong>{{ book.1 }}</strong> <br/>
+                            Price: {{ book.4 }}
+                        </div>
+                        <form method="POST" id="{{ book.0 }}">
+                            {% csrf_token %}
+
+                            <button class="action btn btn-outline-primary" id="action{{ book.0 }}" value="{{ book.0 }}">
+                                Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
+    {% endif %}
+
+    <script>
+
+        $('.action').click(function (e) {
+            e.preventDefault();
+
+            var isbn = $(this).val();
+            var id = "action" + isbn;
+            if ($(this)[0].innerHTML == "Remove from Cart") {
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/remove_book',
+                    data: {
+                        ISBN: $(this).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (result) {
+                        console.log('remove');
+                        document.getElementById(id).innerHTML = 'Add to Cart';
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/add_book',
+                    data: {
+                        ISBN: $(this).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (result) {
+                        console.log('add');
+                        document.getElementById(id).innerHTML = 'Remove from Cart';
+                    }
+                });
+            }
+        });
+
+
+        function send_request(isbn) {
+            $(document).on('submit', '#' + isbn, function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/add_book',
+                    data: {
+                        ISBN: isbn,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        document.getElementById('action' + isbn).onclick = function () {
+                            remove_request(isbn)
+                        };
+                        document.getElementById('action' + isbn).value = 'remove_book';
+                    }
+                });
+            });
+        }
+
+        function remove_request(isbn) {
+            $(document).on('submit', '#' + isbn, function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/cart/remove_book',
+                    data: {
+                        ISBN: isbn,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        document.getElementById('action' + isbn).onclick = function () {
+                            send_request(isbn)
+                        };
+                        document.getElementById('action' + isbn).value = 'add_book';
+                    }
+                });
+            });
+        }
+    </script>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <body>
+    <form action="/search" method="GET">
+        {% include 'search_setup.html' %}
+    </form>
+
+    {% if books %}
+        <ul class="list-group">
+            {% for book in books %}
+                <li class="list-group-item">
+                    <div>
+                        <a href="/manager/modify/{{ book.0 }}">{{ book.1 }}</a>
+                    </div>
+                </li>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
+    {% endif %}
+
+{% endblock %}

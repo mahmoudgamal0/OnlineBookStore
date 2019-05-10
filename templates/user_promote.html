@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <body>
+    <form action="/manager/users" method="GET">
+        <div class="form-group">
+            <div class="row justify-content-center">
+                <div class="pr-lg-1 col-4">
+                    <input name="search_field" class="form-control" placeholder="Enter username..." type="text"/>
+                </div>
+                <input type="submit" value="Search" name="search" class="btn btn-primary"/>
+            </div>
+        </div>
+    </form>
+
+    {% if users %}
+        <div class="alert alert-light row justify-content-center" role="alert">
+            Select the users to promote
+        </div>
+        <form method="POST"> {% csrf_token %}
+
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Promote</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <th>{{ user.1 }}</th>
+                        <th>{{ user.2 }}</th>
+                        <th>{{ user.3 }}</th>
+                        <th><input type="checkbox" name={{ user.0 }}></th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="row justify-content-center">
+                <input type="submit" name="promote" value="Promote" class="btn btn-outline-primary">
+            </div>
+        </form>
+
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Cannot find results!
+        </div>
+    {% endif %}
+    </body>
+
+{% endblock %}

@@ -25,7 +25,7 @@ SECRET_KEY = '3-dew1uppjd^)5&!%f-jjw&&0#ogbthu@eat(30_n32=t^j^_#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['your server IP address', '127.0.0.1']
+ALLOWED_HOSTS = ['your server IP address', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'book_store.middleware.login_middleware.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'book_store.urls'
@@ -76,8 +78,12 @@ WSGI_APPLICATION = 'book_store.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bookstore',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -119,3 +125,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# APPEND_SLASH = False

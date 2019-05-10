@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body>
+
+    <div>
+        <h2>Top 10 Selling Books</h2>
+
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ISBN</th>
+                <th scope="col">Title</th>
+                <th scope="col">Total Sales</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for book in books %}
+                <tr>
+                    <th>{{ book.0 }}</th>
+                    <th>{{ book.1 }}</th>
+                    <th>{{ book.2 }}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Top 5 users</h2>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Total Sales</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <th>{{ user.0 }}</th>
+                        <th>{{ user.1 }}</th>
+                        <th>{{ user.2 }}</th>
+                        <th>{{ user.3 }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Last month sales</h2>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ISBN</th>
+                <th scope="col">Title</th>
+                <th scope="col">Total Sales</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sale in sales %}
+                <tr>
+                    <th>{{ sale.0 }}</th>
+                    <th>{{ sale.1 }}</th>
+                    <th>{{ sale.2 }}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    </body>
+{% endblock %}
