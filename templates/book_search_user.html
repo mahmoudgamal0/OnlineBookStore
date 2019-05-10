@@ -16,10 +16,12 @@
                             Title: <strong>{{ book.1 }}</strong> <br/>
                             Price: {{ book.4 }}
                         </div>
-                        <form method="post" id="{{ book.0 }}">
+                        <form method="POST" id="{{ book.0 }}">
                             {% csrf_token %}
 
-                            <button class="action" id="action{{ book.0 }}" value="{{ book.0 }}">add</button>
+                            <button class="action btn btn-outline-primary" id="action{{ book.0 }}" value="{{ book.0 }}">
+                                Add to Cart
+                            </button>
                         </form>
                     </div>
                 </li>
@@ -34,34 +36,34 @@
     <script>
 
         $('.action').click(function (e) {
-           e.preventDefault();
+            e.preventDefault();
 
             var isbn = $(this).val();
-            var id = "action"+isbn;
-            if($(this)[0].innerHTML == "remove"){
+            var id = "action" + isbn;
+            if ($(this)[0].innerHTML == "Remove from Cart") {
                 $.ajax({
                     type: 'POST',
                     url: '/cart/remove_book',
-                    data:{
+                    data: {
                         ISBN: $(this).val(),
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
-                            console.log('remove');
-                            document.getElementById(id).innerHTML = 'add';
+                    success: function (result) {
+                        console.log('remove');
+                        document.getElementById(id).innerHTML = 'Add to Cart';
                     }
                 });
-            }else{
+            } else {
                 $.ajax({
                     type: 'POST',
                     url: '/cart/add_book',
-                    data:{
+                    data: {
                         ISBN: $(this).val(),
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
-                            console.log('add');
-                            document.getElementById(id).innerHTML = 'remove';
+                    success: function (result) {
+                        console.log('add');
+                        document.getElementById(id).innerHTML = 'Remove from Cart';
                     }
                 });
             }
@@ -69,37 +71,42 @@
 
 
         function send_request(isbn) {
-            $(document).on('submit','#'+isbn,function (e) {
+            $(document).on('submit', '#' + isbn, function (e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
                     url: '/cart/add_book',
-                    data:{
+                    data: {
                         ISBN: isbn,
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
+                    success: function (result) {
                         console.log(result);
-                        document.getElementById('action'+isbn).onclick = function() {remove_request(isbn)};
-                        document.getElementById('action'+isbn).value = 'remove_book';
+                        document.getElementById('action' + isbn).onclick = function () {
+                            remove_request(isbn)
+                        };
+                        document.getElementById('action' + isbn).value = 'remove_book';
                     }
                 });
             });
         }
+
         function remove_request(isbn) {
-            $(document).on('submit','#'+isbn,function (e) {
+            $(document).on('submit', '#' + isbn, function (e) {
                 e.preventDefault();
                 $.ajax({
                     type: 'POST',
                     url: '/cart/remove_book',
-                    data:{
+                    data: {
                         ISBN: isbn,
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
+                    success: function (result) {
                         console.log(result);
-                        document.getElementById('action'+isbn).onclick = function() {send_request(isbn)};
-                        document.getElementById('action'+isbn).value = 'add_book';
+                        document.getElementById('action' + isbn).onclick = function () {
+                            send_request(isbn)
+                        };
+                        document.getElementById('action' + isbn).value = 'add_book';
                     }
                 });
             });

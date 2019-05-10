@@ -1,55 +1,69 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <form method="POST" action="update" id="form">
-        {% csrf_token %}
-        {% for cart in carts  %}
-            title: {{ cart.6 }}<br>
-            price: {{ cart.3 }}<br>
-            count:
-            <input type="text" name="{{ cart.1 }}" value="{{ cart.2 }}"><br>
-            <button class="action" id="action{{ cart.1 }}" value="{{ cart.1 }}" >remove</button>
-            <br>
-        {% endfor %}
-            <input type="submit" value="checkout">
-    </form>
+    <div class="mt-lg-5">
+        {% if carts %}
+            <form method="POST" action="/cart/update" id="form">
+                {% csrf_token %}
+                {% for cart in carts %}
+                    <div class="row mt-lg-5">
+
+                        <div class="mr-lg-5">
+                            ISBN: <strong>{{ cart.1 }}</strong><br>
+                            Price: {{ cart.3 }}<br>
+                            Count:
+                            <input type="text" name="{{ cart.1 }}" value="{{ cart.2 }}">
+                        </div>
+                        <button class="action btn btn-danger" id="action{{ cart.1 }}"
+                                value="{{ cart.1 }}">Remove from Cart</button>
+                    </div>
+                {% endfor %}
+                <div class="row justify-content-center">
+
+                    <input type="submit" value="Checkout" class="btn btn-outline-info mt-lg-5">
+                </div>
+            </form>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No items in your cart!
+            </div>
+        {% endif %}
+    </div>
 
     <script>
-
 
 
         $('.action').click(function (e) {
             e.preventDefault();
 
             var isbn = $(this).val();
-            var id = "action"+isbn;
+            var id = "action" + isbn;
 
-            if($(this)[0].innerHTML == "remove"){
-
+            if ($(this)[0].innerHTML == "Remove from Cart") {
                 $.ajax({
                     type: 'POST',
                     url: '/cart/remove_book',
-                    data:{
+                    data: {
                         ISBN: $(this).val(),
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
-                            console.log('remove');
-                            document.getElementById(id).innerHTML = 'add';
+                    success: function (result) {
+                        console.log('remove');
+                        document.getElementById(id).innerHTML = 'add';
                     }
                 });
 
-            }else{
+            } else {
                 $.ajax({
                     type: 'POST',
                     url: '/cart/add_book',
-                    data:{
+                    data: {
                         ISBN: $(this).val(),
                         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                     },
-                    success:function (result) {
-                            console.log('add');
-                            document.getElementById(id).innerHTML = 'remove';
+                    success: function (result) {
+                        console.log('add');
+                        document.getElementById(id).innerHTML = 'remove';
                     }
                 });
             }
