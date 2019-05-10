@@ -10,9 +10,9 @@ def search_base(request, *args, **kwargs):
     }
 
     if 'search' in request.GET or 'selector' in request.GET:
-        if 'selector' in request.GET:
-            return redirect("search/category/{0}".format(int(request.GET.get('selector'))))
-        return redirect("search/{0}/{1}".format(request.GET['group'], request.GET.get('search_field')))
+        if 'search' in request.GET:
+            return redirect("search/{0}/{1}".format(request.GET['group'], request.GET.get('search_field')))
+        return redirect("search/category/{0}".format(int(request.GET.get('selector'))))
 
     return render(request, get_view_to_render(request), context)
 

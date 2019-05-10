@@ -161,13 +161,17 @@ def format_errors(errors):
     if not errors:
         return []
 
+    print(errors.args)
     err_code = errors.args[0]
-    err_column = re.findall(r"'(.*?)'", errors.args[1], re.DOTALL)[0]
+    err_column = re.findall(r"'(.*?)'", errors.args[1], re.DOTALL)
+    if err_column:
+        err_column = err_column[0]
+
     err_msg = ''
     if err_code == 1264:
         err_msg = 'Wrong value entered at ' + err_column
     elif err_code == 1062:
         err_msg = 'A book with the same ISBN \'' + err_column + '\' already exists'
-    elif err_code == 1690:
+    elif err_code == 1690 or err_code == 1644:
         err_msg = 'Please check the entered quantity'
     return err_msg

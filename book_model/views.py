@@ -53,9 +53,13 @@ def signup(request):
         try:
             mydb, cur = connect()
             cur.execute(sql)
-        except mysql.connector.Error as err:
+        except mysql.connector.Error as e:
             mydb.close()
-            return render(request,'signup.html', {'title': 'Signup', 'errors': err.msg})
+            if 'username' in e.args[1]:
+                err = 'This username is already taken'
+            else:
+                err = 'This email already exists'
+            return render(request,'signup.html', {'title': 'Signup', 'errors': err})
         cur.execute('select @x')
         session_data = {}
         session_data['user_id'] = cur.fetchall()[0][0]
@@ -97,8 +101,8 @@ def login(request,msg_err = None):
         return redirect('/search')
 
 
-def update_user(request):
-    data = {'title': 'Update User Info', 'auth': request.session['is_manager']}
+def update_user(request, msg_err=None):
+    data = {'title': 'Update User Info', 'auth': request.session['is_manager'], 'errors': msg_err}
 
     if (request.method == 'GET'):
         # get data into hash an send it
@@ -131,10 +135,18 @@ def update_user(request):
         updated_data.append(request.POST.get('phone'))
         updated_data.append(request.POST.get('shipping_address'))
         sql = call_procedure('update_user_info', updated_data)
-        cur.execute(sql)
-        mydb.commit()
-        mydb.close()
-        return redirect('/search')
+        try:
+            cur.execute(sql)
+            mydb.commit()
+            mydb.close()
+            return redirect('/search')
+        except Exception as e:
+            print(e)
+            if 'username' in e.args[1]:
+                err = 'This username is already taken'
+            else:
+                err = 'This email already exists'
+            return redirect('/update_user/'+err)
 
 
 def logout(request):
@@ -152,7 +164,7 @@ def logout(request):
     mydb.close()
     request.session['user_id'] = None
     request.session['card_id'] = None
-    return redirect('/')
+    return redirect('/login')
 
 
 def call_procedure(procedure_name,pram = None,out_pram = None):

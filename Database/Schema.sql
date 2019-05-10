@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`Books` (
   `publication_year` DATE NULL,
   `price` DECIMAL UNSIGNED NULL,
   `quantity` INT UNSIGNED NOT NULL DEFAULT 0,
-  `minimum_threshold` INT NOT NULL DEFAULT 0,
+  `minimum_threshold` INT UNSIGNED NOT NULL DEFAULT 0,
   `category_id` INT NULL,
   PRIMARY KEY (`ISBN`),
   INDEX `publisher_id_idx` (`publisher_id` ASC) VISIBLE,
@@ -99,7 +99,6 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`Mng_Order` (
   `order_id` INT NOT NULL AUTO_INCREMENT,
   `quantity` INT NOT NULL,
   `publisher_id` INT NOT NULL,
-  `confirmation` TINYINT(1) NOT NULL DEFAULT 0,
   `ISBN` VARCHAR(25) NOT NULL,
   PRIMARY KEY (`order_id`),
   INDEX `ISBN_idx` (`ISBN` ASC) VISIBLE,
@@ -165,7 +164,6 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`Cart_Items` (
   `ISBN` VARCHAR(25) NOT NULL,
   `quantity` INT UNSIGNED NOT NULL,
   `price` DECIMAL UNSIGNED NOT NULL,
-  `total_price` DECIMAL GENERATED ALWAYS AS (quantity * price),
   PRIMARY KEY (`cart_id`, `ISBN`),
   INDEX `fk_Cart_Items_ISBN_idx` (`ISBN` ASC) VISIBLE,
   CONSTRAINT `fk_Cart_Items_cart_id`
@@ -194,6 +192,50 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`Managers` (
     REFERENCES `bookstore`.`Users` (`user_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`Sales`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `bookstore`.`Sales` ;
+
+CREATE TABLE IF NOT EXISTS `bookstore`.`Sales` (
+  `user_id` INT NOT NULL,
+  `ISBN` VARCHAR(25) NOT NULL,
+  `Timestamp` DATETIME NOT NULL,
+  `quantity` INT UNSIGNED NOT NULL,
+  `price` DECIMAL UNSIGNED NOT NULL,
+  PRIMARY KEY (`user_id`, `Timestamp`, `ISBN`),
+  INDEX `fk_Sales_ISBN_idx` (`ISBN` ASC) VISIBLE,
+  CONSTRAINT `fk_Sales_user_id`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `bookstore`.`Users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Sales_ISBN`
+    FOREIGN KEY (`ISBN`)
+    REFERENCES `bookstore`.`Books` (`ISBN`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `bookstore`.`Visa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `bookstore`.`Visa` ;
+
+CREATE TABLE IF NOT EXISTS `bookstore`.`Visa` (
+  `user_id` INT NOT NULL,
+  `credit_number` VARCHAR(19) NOT NULL,
+  `expiry` DATE NOT NULL,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `fk_Visa_user_id`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `bookstore`.`Users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 USE `bookstore`;
@@ -228,3 +270,17 @@ DELIMITER ;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `bookstore`.`Category`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `bookstore`;
+INSERT INTO `bookstore`.`Category` (`category_id`, `category_name`) VALUES (1, 'Science');
+INSERT INTO `bookstore`.`Category` (`category_id`, `category_name`) VALUES (2, 'Art');
+INSERT INTO `bookstore`.`Category` (`category_id`, `category_name`) VALUES (3, 'Religion');
+INSERT INTO `bookstore`.`Category` (`category_id`, `category_name`) VALUES (4, 'History');
+INSERT INTO `bookstore`.`Category` (`category_id`, `category_name`) VALUES (5, 'Geography');
+
+COMMIT;
+

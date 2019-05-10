@@ -42,9 +42,9 @@ def checkout(request, *args, **kwargs):
 
             try:
                 with connection.cursor() as cursor:
-                    cursor.callproc('cart_checkout', [int(request.session['card_id']), int(request.session['user_id'])])
+                    cursor.callproc('top_cart_checkout', [int(request.session['card_id']), int(request.session['user_id'])])
                 with connection.cursor() as cursor:
-                    cursor.callproc('cart_empty', [int(request.session['manager_id'])])
+                    cursor.callproc('cart_empty', [int(request.session['card_id'])])
                 return redirect('/search')
             except Exception as e:
                 print(e)
