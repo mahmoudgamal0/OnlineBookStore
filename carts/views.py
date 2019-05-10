@@ -58,8 +58,8 @@ def update(request):
     sql = 'update Cart_Items set quantity='
     for key in request.POST:
         if(key != 'csrfmiddlewaretoken'):
-            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN=\''+"'"+str(key)\
-                       +"'"+'\';'
+            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN='+"'"+str(key)\
+                       +"'"+';'
             print(exec_sql)
             cur.execute(exec_sql)
             db.commit()
