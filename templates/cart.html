@@ -12,7 +12,7 @@
                             ISBN: <strong>{{ cart.1 }}</strong><br>
                             Price: {{ cart.3 }}<br>
                             Count:
-                            <input type="text" name="{{ cart.1 }}" value="{{ cart.2 }}">
+                            <input type="text" name="{{ cart.1 }}" value="{{ cart.2 }}" required="true">
                         </div>
                         <button class="action btn btn-danger" id="action{{ cart.1 }}"
                                 value="{{ cart.1 }}">Remove from Cart</button>
