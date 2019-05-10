@@ -8,10 +8,10 @@ def add_book(request):
     if(request.method == 'POST'):
         data = []
         cart_id = request.session['card_id']
-
         data.append(str(cart_id))
         data.append(str(request.POST.get('ISBN')))
         data.append(str(1))
+        print(data)
         sql = call_procedure('cart_include_book', data)
         db, cur = connect()
         cur.execute(sql)
@@ -59,7 +59,8 @@ def update(request):
     sql = 'update Cart_Items set quantity='
     for key in request.POST:
         if(key != 'csrfmiddlewaretoken'):
-            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN='+str(key)+';'
+            exec_sql = sql + str(request.POST.get(key))+' where cart_id='+str(cart_id)+' and ISBN='+"'"+str(key)\
+                       +"'"+';'
             print(exec_sql)
             cur.execute(exec_sql)
             db.commit()
