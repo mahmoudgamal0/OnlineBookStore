@@ -168,4 +168,6 @@ def format_errors(errors):
         err_msg = 'Wrong value entered at ' + err_column
     elif err_code == 1062:
         err_msg = 'A book with the same ISBN \'' + err_column + '\' already exists'
+    elif err_code == 1690:
+        err_msg = 'Please check the entered quantity'
     return err_msg
