@@ -325,7 +325,7 @@ END//
 
 CREATE PROCEDURE `cart_include_book` (
 	IN cart_idIn INT,
-    IN ISBNIn INT,
+    IN ISBNIn VARCHAR(25),
     IN quantityIn INT
 )
 BEGIN
@@ -348,7 +348,7 @@ END//
 
 CREATE PROCEDURE `cart_exclude_book` (
 	IN cart_idIn INT,
-    IN ISBNIn INT
+    IN ISBNIn VARCHAR(25)
 )
 BEGIN
 	DELETE FROM Cart_Items
